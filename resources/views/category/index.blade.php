@@ -26,7 +26,19 @@
 
             <!-- Right Side: Category Table -->
             <div class="col-span-1 md:col-span-2">
-                <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 text-base-content">
+                <form action=" {{ route('categoryIndex') }} " method="GET" class="flex items-center gap-2 ">
+                    <div class="join mb-2">
+                        <input type="text" name="category" value="{{ request('category') }}"
+                            class="input join-item focus:outline-none" placeholder="Search..." />
+                        <button class="btn join-item btn-primary " type="submit">Find</button>
+
+                    </div>
+                    <a href="{{ route('categoryIndex') }}" class="btn  bg-base-300  ml-auto">
+                        Clear
+                    </a>
+                </form>
+                <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100  text-base-content">
+
                     <table class="table">
                         <!-- head -->
                         <thead>
@@ -37,29 +49,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($category as $cat)
-                                
-                            <tr>
-                                <td class="uppercase"> {{ $cat->category }} </td>
-                                <td>
-                                    <a href=" #">
-                                        <button class="btn btn-info">
-                                            Edit
-                                        </button>
-                                    </a>
-                                </td>
-                                <td>
-                                    <form action="#" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-error">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            
-                            @endforeach
+                            @forelse ($category as $cat)
+                                <tr>
+                                    <td class="uppercase"> {{ $cat->category }} </td>
+                                    <td>
+                                        <a href=" {{ route('editCategory', $cat->id) }} ">
+                                            <button class="btn btn-info">
+                                                Edit
+                                            </button>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <form action=" {{ route('deleteCategory', $cat->id) }} " method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-error">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td class="uppercase">No Categories Found</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                     <div class="mt-4">

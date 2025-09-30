@@ -9,15 +9,16 @@
             <div class="col-span-1 ">
                 <div class="card bg-base-100 shadow-xl">
                     <div class="card-body">
-                        <h2 class="card-title text-lg font-semibold mb-4">Add Category</h2>
-                        <form action=" {{ route('storeCategory') }} " method="POST">
+                        <h2 class="card-title text-lg font-semibold mb-4">Update Category</h2>
+                        <form action=" {{ route('updateCategory', $category->id) }} " method="POST">
                             @csrf
+                            @method('PUT')
                             <div class="form-control mb-4 ">
-                                <input type="text" name="category" placeholder="Enter category"
+                                <input type="text" name="category" placeholder="" value="  {{ $category->category }}  "
                                     class="input input-bordered w-full focus:outline-none" required />
                             </div>
                             <div class="form-control">
-                                <button type="submit" class="btn btn-primary w-full">Add</button>
+                                <button type="submit" class="btn btn-primary w-full">Update</button>
                             </div>
                         </form>
                     </div>
@@ -25,7 +26,7 @@
             </div>
 
             <!-- Right Side: Category Table -->
-            <div class="col-span-1 md:col-span-2">
+            {{-- <div class="col-span-1 md:col-span-2">
                 <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 text-base-content">
                     <table class="table">
                         <!-- head -->
@@ -66,7 +67,7 @@
                         {{ $category->links('vendor.pagination.simple-tailwind') }}
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection

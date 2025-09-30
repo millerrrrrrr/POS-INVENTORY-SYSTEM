@@ -28,5 +28,7 @@ Route::prefix('category')->controller(CategoryController::class)->middleware('ow
     
     Route::post('/' ,'storeCategory')->name('storeCategory');
 
-    Route::get('/edit/{id}', 'editCategory')->name('editCategory');
+    Route::get('{id}/edit', 'editCategory')->name('editCategory');
+    Route::put('{id}', 'updateCategory')->name('updateCategory');
+    Route::delete('{id}', 'deleteCategory')->name('deleteCategory');
 });
