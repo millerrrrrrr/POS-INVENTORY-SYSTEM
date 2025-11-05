@@ -3,27 +3,31 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\dashboardController;
-use App\Http\Controllers\OwnerController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('/')->controller(OwnerController::class)->middleware('guest')->group(function(){
-    Route::get('/', 'loginForm')->name('owner.login');
+Route::prefix('/')->controller(LoginController::class)->middleware(['guest'])->group(function(){
+    Route::get('/', 'login')->name('owner.login');
     Route::post('/', 'loginPost')->name('loginPost');
 });
 
-Route::post('/logout', [AccountController::class, 'logout'])->name('logout')->middleware('owner');
+Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
 
-Route::prefix('dashboard')->controller(dashboardController::class)->middleware('owner')->group(function(){
+Route::prefix('dashboard')->controller(dashboardController::class)->middleware(['owner'])->group(function(){
     Route::get('/', 'index')->name('home');
 });
 
-Route::prefix('account')->controller(AccountController::class)->middleware('owner')->group(function(){
+Route::prefix('account')->controller(AccountController::class)->middleware(['owner'])->group(function(){
     Route::get('/change-password', 'changePasswordIndex')->name('changePasswordIndex');
     Route::post('/change-password', 'changePasswordPost')->name('changePasswordPost');
+    
+    Route::get('settings', 'AccountSettings')->name('AccountSettings');
+    Route::get('changeUsername', 'changeUsername')->name('changeUsername');
+    Route::put('changeCreds', 'changeCreds')->name('changeCreds');
 });
 
-Route::prefix('category')->controller(CategoryController::class)->middleware('owner')->group(function(){
+Route::prefix('category')->controller(CategoryController::class)->middleware(['owner'])->group(function(){
     Route::get('/' ,'index')->name('categoryIndex');
     
     Route::post('/' ,'storeCategory')->name('storeCategory');

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AccountController extends Controller
 {
     public function logout(Request $request){
 
-        $request->session()->forget('is_owner');
+        $request->session()->invalidate();
         return redirect()->route('owner.login')->with('success', 'Logged out successfully'); 
     }
 
@@ -42,5 +44,47 @@ class AccountController extends Controller
                 );
         }
     }
+
+
+
+    public function AccountSettings(){
+
+        $user = Auth::user();
+        
+        return view('account.settings', compact('user'));
+    }
     
+    public function changeUsername(){
+
+        $username = Auth::user()->username;
+
+        return view('account.changeusername', compact('username'));
+    }
+
+    public function changeCreds(Request $request){
+
+        $request->validate([
+            'username' => 'required',
+            'currentPassword' => 'required',
+            'password' => 'required|confirmed',
+            
+        ]);
+
+        $user = Auth::user();
+
+        if(!Hash::check($request->currentPassword, $user->password)){
+            return back()->with('error', 'Current password is incorrect');
+        }
+
+        $request->user()->update([
+            'username' => $request->username,
+            'password' => Hash::make($request->newpassword),
+        ]);
+
+           Auth::login($user);
+
+        return redirect()->route('AccountSettings')->with('success', 'Credentials updated successfully');
+
+
+    }
 }   

@@ -14,7 +14,7 @@
                             @csrf
                             <div class="form-control mb-4 ">
                                 <input type="text" name="category" placeholder="Enter category"
-                                    class="input input-bordered w-full focus:outline-none" required />
+                                    class="input input-bordered w-full focus:outline-none"  />
                             </div>
                             <div class="form-control">
                                 <button type="submit" class="btn btn-primary w-full">Add</button>

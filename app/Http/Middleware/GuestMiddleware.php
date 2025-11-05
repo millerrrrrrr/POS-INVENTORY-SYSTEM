@@ -4,9 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class OwnerAuth
+class GuestMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,15 +17,11 @@ class OwnerAuth
     public function handle(Request $request, Closure $next): Response
     {
 
-        if(!request()->session()->get('is_owner')){
-            return redirect()->route('owner.login')->with('error', 'Please login first');
+        if (Auth::check()) {
+            
+            return redirect()->route('home')->with('warning', 'You are already logged in.');
         }
 
         return $next($request);
-        
-        return $response->header('Cache-Control', 'no-cache, no-store, must-revalidate')
-                        ->header('Pragma', 'no-cache')
-                        ->header('Expires', '0');
-
     }
 }

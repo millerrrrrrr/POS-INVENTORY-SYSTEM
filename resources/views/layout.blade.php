@@ -46,6 +46,12 @@
                 </label>
                 <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full">
                     <li>
+                        <a href=" {{ route('AccountSettings') }} "
+                            class="block w-full px-3 py-2 rounded-lg transition hover:bg-base-200">
+                            Account Settings
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('changePasswordIndex') }} "
                             class="block w-full px-3 py-2 rounded-lg transition hover:bg-base-200">
                             Change Password

@@ -4,9 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class OwnerGuest
+class AuthMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,8 +17,8 @@ class OwnerGuest
     public function handle(Request $request, Closure $next): Response
     {
 
-        if($request->session()->get('is_owner')){
-            return redirect()->route('home');
+        if (!Auth::check()) {
+            return redirect()->route('owner.login')->with('warning', 'You must be logged in to access this page.');
         }
 
         return $next($request);

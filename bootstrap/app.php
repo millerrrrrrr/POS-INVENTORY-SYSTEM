@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\GuestMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,9 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         
         $middleware->alias([
-            'owner' => \App\Http\Middleware\OwnerAuth::class,
-            'guest' => \App\Http\Middleware\OwnerGuest::class,
-
+            'owner' => AuthMiddleware::class,
+            'guest' => GuestMiddleware::class,
         ]);
         
     })
