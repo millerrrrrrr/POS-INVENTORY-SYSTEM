@@ -33,6 +33,22 @@
                         Category
                     </a>
                 </li>
+                <li>
+                    <a href=" {{ route('addProduct') }} "
+                        class="block w-full px-4 py-2 rounded-lg font-medium transition
+              border-2 border-transparent
+              hover:bg-base-300 hover:border-2 hover:border-white">
+                        Add Product
+                    </a>
+                </li>
+                <li>
+                    <a href=" {{ route('productList') }} "
+                        class="block w-full px-4 py-2 rounded-lg font-medium transition
+              border-2 border-transparent
+              hover:bg-base-300 hover:border-2 hover:border-white">
+                        Product List
+                    </a>
+                </li>
             </ul>
         </div>
 
