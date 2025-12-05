@@ -12,7 +12,7 @@
   <form class="w-full max-w-sm p-6 bg-base-100 shadow-xl rounded-2xl" method="POST" action="{{ route('loginPost') }}"   >
     @csrf
     <fieldset class="fieldset">
-      <legend class="fieldset-legend text-xl font-bold mb-4 text-center">Login</legend>
+      <legend class="fieldset-legend text-xl font-bold mb-4 text-center">Rhaw Motorshop Login</legend>
 
       <!-- Username -->
       <label class="form-control w-full mb-4 floating-label">

@@ -55,4 +55,63 @@ class ProductController extends Controller
 
         return view('product.list', compact('products'));
     }
+
+    public function viewProduct($id)
+    {
+
+        $product = Product::findOrFail($id);
+
+        return view('product.view', compact('product'));
+    }
+
+    public function editProduct($id)
+    {
+
+        $product = Product::findOrFail($id);
+        $category = Category::orderBy('category', 'asc')->get();
+
+        return view('product.edit', compact('product', 'category'));
+    }
+
+    public function updateProduct(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        $imagePath = $product->image;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('photos/products', 'public');
+        }
+
+        $request->validate([
+            'image' => 'nullable',
+            'name' => 'required',
+            'category' => 'required',
+            'description' => 'required',
+            'stock' => 'required',
+            'purchasePrice' => 'required',
+            'salePrice' => 'required',
+        ]);
+
+        if ($product->update([
+            'image' => $imagePath,
+            'name' => $request->name,
+            'category' => $request->category,
+            'description' => $request->description,
+            'stock' => $request->stock,
+            'purchasePrice' => $request->purchasePrice,
+            'salePrice' => $request->salePrice,
+        ])) {
+            return redirect()->route('productList')->with('success', 'Product updated successfully');
+        }
+        return back()->with('error', 'Failed');
+    }
+    public function deleteProduct($id)
+    {
+        $product = Product::findOrFail($id);
+
+        if ($product->delete()) {
+            return back()->with('success', 'Product deleted successfully');
+        }
+        return back()->with('error', 'Failed');
+    }
 }

@@ -23,11 +23,11 @@
                     <tr>
                         <td class="flex justify-center">
                             @if ($pro->image)
-                                <img src=" {{ asset('storage/' . $pro->image) }} " alt=" {{ $pro->name }} "
-                                    class="w-16 h-16 object-cover rounded-md ">
+                                <img src="{{ asset('storage/' . $pro->image) }}" alt="{{ $pro->name }}"
+                                    class="w-16 h-16 object-cover rounded-md">
                             @else
                                 <div
-                                    class="w-16 h-16 bg-gray-200  rounded-md flex items-center justify-center text-gray500 text-cs text-center">
+                                    class="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center text-gray500 text-cs text-center">
                                     <p>No image</p>
                                 </div>
                             @endif
@@ -38,33 +38,26 @@
                         <td class="text-center">{{ $pro->stock }}</td>
                         <td class="text-center">{{ $pro->purchasePrice }}</td>
                         <td class="text-center">{{ $pro->salePrice }}</td>
-                        <td >
+                        <td>
                             <div class="flex items-center gap-3 justify-center">
 
-                                {{-- View --}}
-                                <a href=" {{ route('viewProduct', $pro->id) }} "
-                                    class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                </a>
+                                {{-- Delete --}}
+                                <form action=" {{ route('productRestore', $pro->id) }} " method="POST">
+                                    @csrf
+                                    <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                                        </svg>
 
-                                {{-- Edit --}}
-                                <a href=" {{ route('editProduct', $pro->id) }} "
-                                    class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.862 3.487a2.25 2.25 0 113.182 3.183L7.5 19.214 3 21l1.786-4.5L16.862 3.487z" />
-                                    </svg>
-                                </a>
+                                    </button>
+                                </form>
+
+
 
                                 {{-- Delete --}}
-                                <form action=" {{ route('deleteProduct', $pro->id) }} " method="POST">
+                                <form action="{{ route('productForceDelete', $pro->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
@@ -78,20 +71,12 @@
 
                             </div>
                         </td>
-
-
                     </tr>
-
-
                 @empty
-                    <td>No Item Found</td>
+                    <td colspan="8" class="text-center">No Item Found</td>
                 @endforelse
-
             </tbody>
         </table>
-        <div class="mt-4">
-                    {{ $products->links('vendor.pagination.simple-tailwind') }}
-               </div>
     </div>
 
 @endsection

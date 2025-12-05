@@ -49,6 +49,22 @@
                         Product List
                     </a>
                 </li>
+                <li>
+                    <a href=" {{ route('stockIndex') }} "
+                        class="block w-full px-4 py-2 rounded-lg font-medium transition
+              border-2 border-transparent
+              hover:bg-base-300 hover:border-2 hover:border-white">
+                        Stock Management
+                    </a>
+                </li>
+                <li>
+                    <a href=" {{ route('utilityIndex') }} "
+                        class="block w-full px-4 py-2 rounded-lg font-medium transition
+              border-2 border-transparent
+              hover:bg-base-300 hover:border-2 hover:border-white">
+                        Utility
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -67,12 +83,12 @@
                             Account Settings
                         </a>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a href="{{ route('changePasswordIndex') }} "
                             class="block w-full px-3 py-2 rounded-lg transition hover:bg-base-200">
                             Change Password
                         </a>
-                    </li>
+                    </li> --}}
                     <li>
                         <form method="POST" action=" {{ route('logout') }} ">
                             @csrf

@@ -5,6 +5,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\UtilitiyController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -44,4 +46,25 @@ Route::prefix('product')->controller(ProductController::class)->middleware(['own
     Route::post('/','store')->name('storeProduct');
 
     Route::get('list', 'productList')->name('productList');
+
+    Route::get('{id}/view', 'viewProduct')->name('viewProduct');
+    Route::get('{id}/edit', 'editProduct')->name('editProduct');
+    Route::put('{id}', 'updateProduct')->name('updateProduct');
+    Route::delete('{id}', 'deleteProduct')->name('deleteProduct');
+});
+
+Route::prefix('stock')->controller(StockController::class)->middleware(['owner'])->group(function(){
+   
+    Route::get('/', 'index')->name('stockIndex');
+    Route::get('{id}/restock', 'restockIndex')->name('restockIndex');
+    Route::post('{id}/restock', 'restock')->name('restock');
+
+});
+
+Route::prefix('utilities')->controller(UtilitiyController::class)->middleware(['owner'])->group(function(){
+   
+    Route::get('/', 'index')->name('utilityIndex');
+    Route::get('/productArchive', 'productArchive')->name('productArchive');
+    Route::post('productArchive/{id}', 'productRestore')->name('productRestore');
+    Route::delete('productArchive/{id}', 'productForceDelete')->name('productForceDelete');
 });
