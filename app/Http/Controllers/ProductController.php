@@ -101,7 +101,7 @@ class ProductController extends Controller
             'purchasePrice' => $request->purchasePrice,
             'salePrice' => $request->salePrice,
         ])) {
-            return redirect()->route('productList')->with('success', 'Product updated successfully');
+            return redirect()->route('productList')->with('success', $product->name . ' has been updated successfully');
         }
         return back()->with('error', 'Failed');
     }

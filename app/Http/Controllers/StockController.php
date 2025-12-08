@@ -38,7 +38,7 @@ class StockController extends Controller
         $product->stock += $request->restock_quantity;
         $product->save();
 
-        return redirect()->route('stockIndex')->with('success', $product->name . 'has been restocked successfully!');
+        return redirect()->route('stockIndex')->with('success', $product->name . ' has been restocked successfully!');
 
     }
 }

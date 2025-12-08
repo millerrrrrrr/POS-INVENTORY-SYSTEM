@@ -12,7 +12,7 @@
             <h2 class="card-title text-lg font-bold">Order Archive</h2>
             <p>View and manage archived orders. Restore or permanently delete old order records.</p>
             <div class="card-actions justify-end mt-4">
-                <a href="" 
+                <a href=" {{ route('orderArchive') }} " 
                    class="btn btn-primary">Go to Order Archive</a>
             </div>
         </div>

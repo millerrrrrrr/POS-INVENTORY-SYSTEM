@@ -58,6 +58,22 @@
                     </a>
                 </li>
                 <li>
+                    <a href=" {{ route('orderIndex') }} "
+                        class="block w-full px-4 py-2 rounded-lg font-medium transition
+              border-2 border-transparent
+              hover:bg-base-300 hover:border-2 hover:border-white">
+                        Point of Sale
+                    </a>
+                </li>
+                <li>
+                    <a href=" {{ route('orderListIndex') }} "
+                        class="block w-full px-4 py-2 rounded-lg font-medium transition
+              border-2 border-transparent
+              hover:bg-base-300 hover:border-2 hover:border-white">
+                        Order List
+                    </a>
+                </li>
+                <li>
                     <a href=" {{ route('utilityIndex') }} "
                         class="block w-full px-4 py-2 rounded-lg font-medium transition
               border-2 border-transparent
@@ -65,6 +81,7 @@
                         Utility
                     </a>
                 </li>
+
             </ul>
         </div>
 

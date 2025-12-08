@@ -4,6 +4,8 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UtilitiyController;
@@ -65,6 +67,42 @@ Route::prefix('utilities')->controller(UtilitiyController::class)->middleware(['
    
     Route::get('/', 'index')->name('utilityIndex');
     Route::get('/productArchive', 'productArchive')->name('productArchive');
+
+
+    Route::get('/orderArchive', 'orderArchive')->name('orderArchive');
+    Route::get('/view/{id}', 'viewDeletedOrder')->name('DeletedOrderList.view');
+
+
+    Route::post('/restore/{id}', 'restoreOrder')->name('orderList.restore');
+    Route::delete('/force-delete/{id}', 'forceDeleteOrder')->name('orderList.forceDelete');
+
+
     Route::post('productArchive/{id}', 'productRestore')->name('productRestore');
     Route::delete('productArchive/{id}', 'productForceDelete')->name('productForceDelete');
+});
+
+// Route::prefix('order')->controller(OrderController::class)->middleware(['owner'])->group(function(){
+   
+//     Route::get('/', 'orderIndex')->name('orderIndex');
+
+// });
+
+Route::prefix('order')->controller(OrderController::class)->middleware(['owner'])->group(function(){
+    Route::get('/', 'orderIndex')->name('orderIndex');
+    Route::get('/search/ajax', 'ajaxSearch')->name('order.ajaxSearch');
+
+    Route::post('/cart/add/{id}', 'addToCart')->name('cart.add');
+    Route::put('/cart/update/{id}', 'updateCart')->name('cart.update');
+    Route::delete('/cart/remove/{id}', 'removeFromCart')->name('cart.remove');
+    Route::post('/cart/checkout', 'checkout')->name('cart.checkout');
+    
+});
+
+Route::prefix('orderList')->controller(OrderListController::class)->middleware(['owner'])->group(function(){
+    
+    Route::get('/', 'orderListIndex')->name('orderListIndex');
+    Route::get('/view/{id}', 'viewOrder')->name('orderList.view');
+
+    Route::delete('/delete/{id}', 'destroy')->name('orderList.delete');
+
 });
