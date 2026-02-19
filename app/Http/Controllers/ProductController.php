@@ -25,16 +25,22 @@ class ProductController extends Controller
         // image
         $request->validate([
             'image' => 'nullable',
-            'name' => 'required',
+            'barcode' => 'nullable|unique:products,barcode',
+            'name' => 'required|unique:products,name',
             'category' => 'required',
             'description' => 'required',
             'stock' => 'required',
             'purchasePrice' => 'required',
             'salePrice' => 'required',
-        ]);
+        ],[
+            'barcode.unique' => 'Barcode already exists.',
+            'name.unique' => 'Product name already exists.'
+        ]
+        );
 
         if (Product::create([
             'image' => $imagePath,
+            'barcode' => $request->barcode,
             'name' => $request->name,
             'category' => $request->category,
             'description' => $request->description,
@@ -84,6 +90,7 @@ class ProductController extends Controller
 
         $request->validate([
             'image' => 'nullable',
+            'barcode' => 'nullable|unique:products,barcode,' . $product->id,
             'name' => 'required',
             'category' => 'required',
             'description' => 'required',
@@ -94,6 +101,7 @@ class ProductController extends Controller
 
         if ($product->update([
             'image' => $imagePath,
+            'barcode' => $request->barcode,
             'name' => $request->name,
             'category' => $request->category,
             'description' => $request->description,

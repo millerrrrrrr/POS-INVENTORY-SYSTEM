@@ -92,11 +92,14 @@ Route::prefix('order')->controller(OrderController::class)->middleware(['owner']
     Route::get('/search/ajax', 'ajaxSearch')->name('order.ajaxSearch');
 
     Route::post('/cart/add/{id}', 'addToCart')->name('cart.add');
+    Route::post('/cart/add-barcode', 'addByBarcode')->name('cart.addByBarcode');
     Route::put('/cart/update/{id}', 'updateCart')->name('cart.update');
     Route::delete('/cart/remove/{id}', 'removeFromCart')->name('cart.remove');
     Route::post('/cart/checkout', 'checkout')->name('cart.checkout');
-    
 });
+
+
+
 
 Route::prefix('orderList')->controller(OrderListController::class)->middleware(['owner'])->group(function(){
     

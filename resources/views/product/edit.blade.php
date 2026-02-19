@@ -51,6 +51,13 @@
         <div>
 
             <div class="mb-4">
+                        <label for="barcode" class="block text-sm font-semibold text-gray-700">Barcode</label>
+                        <input type="text" id="barcode" name="barcode"
+                            class="mt-2 p-2 border border-gray-300 rounded-md w-full"
+                            value=" {{ $product->barcode }} " >
+                    </div>
+
+            <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-700">Product Name</label>
                 <input type="text" name="name"
                     class="mt-2 p-2 border border-gray-300 rounded-md w-full"

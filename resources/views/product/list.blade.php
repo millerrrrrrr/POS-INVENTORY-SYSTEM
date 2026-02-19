@@ -9,6 +9,7 @@
             <thead class="text-black">
                 <tr>
                     <th class="text-center">Image</th>
+                    <th class="text-center">Barcode</th>
                     <th class="text-center">Product Name</th>
                     <th class="text-center">Category</th>
                     <th class="text-center">Description</th>
@@ -32,13 +33,25 @@
                                 </div>
                             @endif
                         </td>
+                        <td class="text-center">
+                            @if ($pro->barcode)
+                                <div class="flex flex-col items-center justify-center">
+                                    <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($pro->barcode, 'C128', 1.5, 40) }}"
+                                        alt="barcode" class="mx-auto">
+                                    <span class="font-mono text-xs mt-1">{{ $pro->barcode }}</span>
+                                </div>
+                            @else
+                                <span class="text-gray-400">No barcode</span>
+                            @endif
+                        </td>
+
                         <td class="text-center">{{ $pro->name }}</td>
                         <td class="text-center">{{ $pro->category }}</td>
                         <td class="text-center">{{ $pro->description }}</td>
                         <td class="text-center">{{ $pro->stock }}</td>
                         <td class="text-center">{{ $pro->purchasePrice }}</td>
                         <td class="text-center">{{ $pro->salePrice }}</td>
-                        <td >
+                        <td>
                             <div class="flex items-center gap-3 justify-center">
 
                                 {{-- View --}}
@@ -90,8 +103,8 @@
             </tbody>
         </table>
         <div class="mt-4">
-                    {{ $products->links('vendor.pagination.simple-tailwind') }}
-               </div>
+            {{ $products->links('vendor.pagination.simple-tailwind') }}
+        </div>
     </div>
 
 @endsection
