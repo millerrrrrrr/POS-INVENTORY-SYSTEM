@@ -91,7 +91,7 @@ class ProductController extends Controller
         $request->validate([
             'image' => 'nullable',
             'barcode' => 'nullable|unique:products,barcode,' . $product->id,
-            'name' => 'required',
+            'name' => 'required|unique:products,name,' . $product->id,
             'category' => 'required',
             'description' => 'required',
             'stock' => 'required',

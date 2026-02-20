@@ -4,7 +4,7 @@
 
 @section('main')
 
-<div class="space-y-6 text-white" >
+<div class="space-y-6 text-white">
 
     <!-- Order Summary Card -->
     <div class="card bg-base-100 shadow p-5 text-white">
@@ -18,7 +18,13 @@
                 <span class="font-semibold">Date:</span> {{ $order->order_date }}
             </div>
             <div>
-                <span class="font-semibold">Total:</span> ₱{{ number_format($order->total, 2) }}
+                <span class="font-semibold">Subtotal:</span> ₱{{ number_format($order->total, 2) }}
+            </div>
+            <div>
+                <span class="font-semibold">VAT (12%):</span> ₱{{ number_format($order->vat, 2) }}
+            </div>
+            <div>
+                <span class="font-semibold">Total:</span> ₱{{ number_format($order->total_with_vat, 2) }}
             </div>
             <div>
                 <span class="font-semibold">Cash:</span> ₱{{ number_format($order->cash, 2) }}

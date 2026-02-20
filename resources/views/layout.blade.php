@@ -15,7 +15,7 @@
     <div class="w-full md:w-64 bg-base-200 p-6 flex flex-col justify-between">
         <!-- Top Links -->
         <div>
-            <h1 class="text-2xl font-bold mb-8">Rhaw Moto Shop</h1>
+            <h1 class="text-2xl font-bold mb-8">Rhaw Motor Shop</h1>
             <ul class="menu space-y-2 w-full">
                 <li>
                     <a href=" {{ route('home') }} "
@@ -78,7 +78,7 @@
                         class="block w-full px-4 py-2 rounded-lg font-medium transition
               border-2 border-transparent
               hover:bg-base-300 hover:border-2 hover:border-white">
-                        Utility
+                        Utilities
                     </a>
                 </li>
 

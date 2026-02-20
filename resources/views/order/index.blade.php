@@ -39,6 +39,7 @@
                         <thead class="bg-base-100 sticky top-0 z-10">
                             <tr>
                                 <th>Image</th>
+                                <th>Barcode</th>
                                 <th>Name</th>
                                 <th>Category</th>
                                 <th>Description</th>
@@ -75,11 +76,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $total = 0; @endphp
+                            @php $subtotal = 0; @endphp
                             @foreach (session('cart') as $id => $details)
                                 @php
-                                    $subtotal = $details['price'] * $details['quantity'];
-                                    $total += $subtotal;
+                                    $itemSubtotal = $details['price'] * $details['quantity'];
+                                    $subtotal += $itemSubtotal;
                                 @endphp
                                 <tr>
                                     <td>{{ $details['name'] }}</td>
@@ -92,7 +93,7 @@
                                         </form>
                                     </td>
                                     <td>{{ number_format($details['price'], 2) }}</td>
-                                    <td>{{ number_format($subtotal, 2) }}</td>
+                                    <td>{{ number_format($itemSubtotal, 2) }}</td>
                                     <td>
                                         <form action="{{ route('cart.remove', $id) }}" method="POST">
                                             @csrf
@@ -118,16 +119,29 @@
             <div class="card-body">
                 <h2 class="card-title">Payment</h2>
 
+                @php
+                    $vatRate = 0.12;
+                    $vatAmount = $subtotal * $vatRate;
+                    $totalWithVat = $subtotal + $vatAmount;
+                @endphp
+
+                <div class="text-lg font-semibold mb-2">
+                    Subtotal: ₱ {{ number_format($subtotal, 2) }}
+                </div>
+                <div class="text-lg font-semibold mb-2">
+                    VAT (12%): ₱ {{ number_format($vatAmount, 2) }}
+                </div>
                 <div class="text-xl font-bold mb-4">
-                    Total: ₱ {{ number_format(session('cart_total', 0), 2) }}
+                    Total: ₱ {{ number_format($totalWithVat, 2) }}
                 </div>
 
-                <form action="{{ route('cart.checkout') }}" method="POST">
+                <form id="checkout-form" action="{{ route('cart.checkout') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="total_with_vat" value="{{ $totalWithVat }}">
                     <label class="label mt-4">Cash Received</label>
                     <input type="number" step="0.01" name="cash"
                         class="input input-bordered w-full focus:outline-none" required>
-                    <button class="btn btn-primary mt-4 w-full">Complete Transaction</button>
+                    <button type="submit" id="checkout-button" class="btn btn-primary mt-4 w-full">Complete Transaction</button>
                 </form>
             </div>
         </div>

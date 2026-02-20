@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->unique('name');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->decimal('vat', 10, 2)->default(0); // stores the VAT amount
+            $table->decimal('total_with_vat', 10, 2)->default(0); // stores total including VAT
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropUnique(['name']);
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropColumn(['vat', 'total_with_vat']);
         });
     }
 };

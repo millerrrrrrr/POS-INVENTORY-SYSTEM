@@ -10,7 +10,15 @@ class Order extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['total', 'cash', 'change', 'order_date'];
+    
+      protected $fillable = [
+        'total',
+        'vat',
+        'total_with_vat',
+        'cash',
+        'change',
+        'order_date'
+    ];
 
     public function items()
     {
