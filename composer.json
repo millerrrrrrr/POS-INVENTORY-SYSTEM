@@ -12,6 +12,7 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "mike42/escpos-php": "^2.2",
         "milon/barcode": "^12.1"
     },
     "require-dev": {

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ReceiptPrinter;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -12,20 +15,22 @@ class OrderController extends Controller
 {
     // Display POS page
     public function orderIndex(Request $request)
-{
-    $search = $request->query('search');
+    {
+        $search = $request->query('search');
 
-    $products = Product::query()
-        ->when($search, fn ($q) =>
-            $q->where('name', 'like', "%$search%")
-        )
-        ->get();
+        $products = Product::query()
+            ->when(
+                $search,
+                fn($q) =>
+                $q->where('name', 'like', "%$search%")
+            )
+            ->get();
 
-    // Get subtotal from session or default 0
-    $subtotal = session('cart_total', 0);
+        // Get subtotal from session or default 0
+        $subtotal = session('cart_total', 0);
 
-    return view('order.index', compact('products', 'subtotal'));
-}
+        return view('order.index', compact('products', 'subtotal'));
+    }
     // =========================
     // ADD TO CART (BUTTON)
     // =========================
@@ -153,74 +158,89 @@ class OrderController extends Controller
     // =========================
     // CHECKOUT
     // =========================
-   public function checkout(Request $request)
-{
-    $cart = session()->get('cart', []);
-    
-    if (empty($cart)) {
-        return back()->with('error', 'Cart is empty.');
-    }
+     public function checkout(Request $request)
+    {
+        $cart = session()->get('cart', []);
 
-    // Total before VAT
-    $subtotal = session('cart_total', 0);
-
-    // VAT (Philippines 12%)
-    $vatRate = 0.12;
-    $vatAmount = $subtotal * $vatRate;
-
-    // Total including VAT
-    $totalWithVat = $subtotal + $vatAmount;
-
-    $cash = $request->cash;
-
-    if ($cash < $totalWithVat) {
-        return back()->with('error', 'Cash is insufficient.');
-    }
-
-    $change = $cash - $totalWithVat;
-
-    // Create the order
-    $order = Order::create([
-        'total' => $subtotal,           // before VAT
-        'vat' => $vatAmount,            // 12% VAT
-        'total_with_vat' => $totalWithVat, // subtotal + VAT
-        'cash' => $cash,
-        'change' => $change,
-        'order_date' => Carbon::now(),
-    ]);
-
-    // Add items and update stock
-    foreach ($cart as $productId => $item) {
-        $product = Product::find($productId);
-
-        if ($product) {
-            if ($item['quantity'] > $product->stock) {
-                return back()->with('error', "Insufficient stock for {$product->name}.");
-            }
-
-            $product->decrement('stock', $item['quantity']);
+        if (empty($cart)) {
+            return back()->with('error', 'Cart is empty.');
         }
 
-        OrderItem::create([
-            'order_id' => $order->id,
-            'product_id' => $productId,
-            'quantity' => $item['quantity'],
-            'price' => $item['price'],
-            'subtotal' => $item['price'] * $item['quantity'],
-        ]);
+        // =========================
+        // COMPUTE TOTALS
+        // =========================
+        $subtotal = session('cart_total', 0);
+        $vatRate = 0.12;
+        $vatAmount = $subtotal * $vatRate;
+        $totalWithVat = $subtotal + $vatAmount;
+
+        $cash = $request->cash;
+
+        if ($cash < $totalWithVat) {
+            return back()->with('error', 'Cash is insufficient.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // =========================
+            // CREATE ORDER
+            // =========================
+            $order = Order::create([
+                'total' => $subtotal,
+                'vat' => $vatAmount,
+                'total_with_vat' => $totalWithVat,
+                'cash' => $cash,
+                'change' => $cash - $totalWithVat,
+                'order_date' => Carbon::now(),
+            ]);
+
+            // =========================
+            // CREATE ORDER ITEMS + UPDATE STOCK
+            // =========================
+            foreach ($cart as $productId => $item) {
+                $product = Product::lockForUpdate()->findOrFail($productId);
+
+                if ($item['quantity'] > $product->stock) {
+                    throw new \Exception("Insufficient stock for {$product->name}");
+                }
+
+                $product->decrement('stock', $item['quantity']);
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $productId,
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'subtotal' => $item['price'] * $item['quantity'],
+                ]);
+            }
+
+            // =========================
+            // SAVE EVERYTHING
+            // =========================
+            DB::commit();
+
+            // =========================
+            // 🔥 PRINT RECEIPT (HERE!)
+            // =========================
+            ReceiptPrinter::print(
+                $order,
+                $order->items()->with('product')->get()
+            );
+
+            // =========================
+            // CLEAR CART
+            // =========================
+            session()->forget(['cart', 'cart_total']);
+
+            return back()->with('success', 'Transaction completed and receipt printed.');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
     }
-
-    // Clear cart
-    session()->forget(['cart', 'cart_total']);
-
-    return back()->with(
-        'success',
-        'Transaction completed! Subtotal: ₱' . number_format($subtotal, 2) .
-        ', VAT (12%): ₱' . number_format($vatAmount, 2) .
-        ', Total: ₱' . number_format($totalWithVat, 2) .
-        ', Change: ₱' . number_format($change, 2)
-    );
-}
 
     // =========================
     // AJAX SEARCH
@@ -230,7 +250,9 @@ class OrderController extends Controller
         $search = $request->query('search');
 
         $products = Product::query()
-            ->when($search, fn ($q) =>
+            ->when(
+                $search,
+                fn($q) =>
                 $q->where('name', 'like', "%$search%")
             )
             ->get();
@@ -244,10 +266,7 @@ class OrderController extends Controller
     private function calculateTotal($cart)
     {
         return collect($cart)->sum(
-            fn ($item) => $item['price'] * $item['quantity']
+            fn($item) => $item['price'] * $item['quantity']
         );
     }
-
-
-   
 }

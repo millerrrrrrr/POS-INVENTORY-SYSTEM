@@ -109,3 +109,4 @@ Route::prefix('orderList')->controller(OrderListController::class)->middleware([
     Route::delete('/delete/{id}', 'destroy')->name('orderList.delete');
 
 });
+
