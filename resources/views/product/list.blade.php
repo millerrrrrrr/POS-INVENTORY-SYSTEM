@@ -4,6 +4,29 @@
 
 @section('main')
 
+    <form method="GET" action="{{ route('productList') }}" class="mb-4">
+    <div class="flex gap-2 items-center text-white">
+        <input
+            type="text"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Search product..."
+            class="input input-bordered w-full max-w-xs"
+        >
+
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+
+        {{-- ✅ Clear Button --}}
+        @if(request()->has('search') && request('search') !== '')
+            <a href="{{ route('productList') }}" class="btn bg-red-500 hover:bg-red-600 text-white border-none">
+                Clear
+            </a>
+        @endif
+    </div>
+</form>
+
     <div class="overflow-x-auto">
         <table class="table table-s">
             <thead class="text-black">

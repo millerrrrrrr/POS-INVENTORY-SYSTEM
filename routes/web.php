@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
@@ -110,3 +111,10 @@ Route::prefix('orderList')->controller(OrderListController::class)->middleware([
 
 });
 
+
+
+Route::prefix('orderHistory')->controller(OrderHistoryController::class)->middleware(['owner'])->group(function(){
+    
+    Route::get('/', 'index')->name('orderHistoryIndex');
+
+});

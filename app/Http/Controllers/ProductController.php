@@ -23,19 +23,21 @@ class ProductController extends Controller
             $imagePath = $request->file('image')->store('photos/products', 'public');
         }
         // image
-        $request->validate([
-            'image' => 'nullable',
-            'barcode' => 'nullable|unique:products,barcode',
-            'name' => 'required|unique:products,name',
-            'category' => 'required',
-            'description' => 'required',
-            'stock' => 'required',
-            'purchasePrice' => 'required',
-            'salePrice' => 'required',
-        ],[
-            'barcode.unique' => 'Barcode already exists.',
-            'name.unique' => 'Product name already exists.'
-        ]
+        $request->validate(
+            [
+                'image' => 'nullable',
+                'barcode' => 'nullable|unique:products,barcode',
+                'name' => 'required|unique:products,name',
+                'category' => 'required',
+                'description' => 'required',
+                'stock' => 'required',
+                'purchasePrice' => 'required',
+                'salePrice' => 'required',
+            ],
+            [
+                'barcode.unique' => 'Barcode already exists.',
+                'name.unique' => 'Product name already exists.'
+            ]
         );
 
         if (Product::create([
@@ -53,13 +55,21 @@ class ProductController extends Controller
         return back()->with('error', 'Failed');
     }
 
-    public function productList()
+    public function productList(Request $request)
     {
+        $search = $request->input('search');
 
-        $products = Product::orderBy('stock', 'asc')->paginate(8);
+        $products = Product::when($search, function ($query, $search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('barcode', 'like', "%{$search}%")
+                ->orWhere('category', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+        })
+            ->orderBy('stock', 'asc')
+            ->paginate(8)
+            ->withQueryString(); // keeps search when paginating
 
-
-        return view('product.list', compact('products'));
+        return view('product.list', compact('products', 'search'));
     }
 
     public function viewProduct($id)

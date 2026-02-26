@@ -10,20 +10,25 @@ use Illuminate\Http\Request;
 
 class dashboardController extends Controller
 {
-    public function index()
+   public function index()
     {
-
         $today = Carbon::today();
 
-        // Count the number of orders created today
+        // Total orders today
         $totalOrdersToday = Order::whereDate('created_at', $today)->count();
 
+        // ✅ Total sales today (with VAT)
+        $totalSalesToday = Order::whereDate('created_at', $today)
+            ->sum('total_with_vat');
 
+        // Low stock
         $lowStockLevel = 10;
-
         $lowStockProducts = Product::where('stock', '<=', $lowStockLevel)->count();
 
-
-        return view('dashboard.home', compact('totalOrdersToday', 'lowStockProducts'));
+        return view('dashboard.home', compact(
+            'totalOrdersToday',
+            'totalSalesToday',
+            'lowStockProducts'
+        ));
     }
 }
