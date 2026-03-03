@@ -8,6 +8,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UtilitiyController;
 use Illuminate\Support\Facades\Route;
@@ -117,4 +118,10 @@ Route::prefix('orderHistory')->controller(OrderHistoryController::class)->middle
     
     Route::get('/', 'index')->name('orderHistoryIndex');
 
+});
+
+
+Route::prefix('salesReport')->controller(SalesReportController::class)->middleware(['owner'])->group(function(){
+    Route::get('/', 'index')->name('salesReport.index');
+    Route::get('/print', 'print')->name('salesReport.print'); // for A4 print
 });

@@ -7,14 +7,29 @@ use Illuminate\Http\Request;
 
 class OrderListController extends Controller
 {
-    public function orderListIndex()
+    public function orderListIndex(Request $request)
     {
+        $query = Order::query();
 
-        $order = Order::latest()->paginate(10);
+        // Search by ID or other fields if needed
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('id', 'like', "%$search%");
+            // You can also search other fields like customer name if available
+        }
+
+        // Filter by date
+        if ($request->filled('from_date')) {
+            $query->whereDate('order_date', '>=', $request->input('from_date'));
+        }
+        if ($request->filled('to_date')) {
+            $query->whereDate('order_date', '<=', $request->input('to_date'));
+        }
+
+        $order = $query->latest()->paginate(10)->withQueryString(); // preserve filters in pagination
 
         return view('orderList.index', compact('order'));
     }
-
     public function viewOrder($id)
     {
         $order = Order::with('items.product')->findOrFail($id);
@@ -24,20 +39,16 @@ class OrderListController extends Controller
 
     public function destroy($id)
     {
-        $order = Order::with('items')->findOrFail($id);
+        $order = Order::with('items.product')->findOrFail($id);
 
         foreach ($order->items as $item) {
-            $product = $item->product;
-            if ($product) {
-                $product->stock += $item->quantity; // restore stock
-                $product->save();
+            if ($item->product) {
+                $item->product->increment('stock', $item->quantity);
             }
         }
 
         $order->delete();
 
-        return back()->with('success', 'Order soft deleted and stock restored.');
+        return back()->with('success', 'Order deleted and stock restored.');
     }
-
-   
 }

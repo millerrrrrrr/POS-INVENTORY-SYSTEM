@@ -4,13 +4,44 @@
 
 @section('main')
 
+    <form method="GET" action="{{ route('orderListIndex') }}" class="mb-4">
+        <div class="flex justify-between items-center gap-2 text-white">
+            <!-- Left: Search -->
+            <div class="flex gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search order..."
+                    class="input input-bordered w-full max-w-xs">
+                <button type="submit" class="btn btn-primary">Search</button>
+                @if (request('search'))
+                    <a href="{{ route('orderListIndex') }}"
+                        class="btn bg-red-500 hover:bg-red-600 text-white border-none">Clear</a>
+                @endif
+            </div>
+
+            <!-- Right: Date filter -->
+            <div class="flex gap-2 items-center">
+                <label for="from_date" class="text-black">From:</label>
+                <input type="date" name="from_date" id="from_date" value="{{ request('from_date') }}"
+                    class="input input-bordered">
+
+                <label for="to_date" class="text-black">To:</label>
+                <input type="date" name="to_date" id="to_date" value="{{ request('to_date') }}"
+                    class="input input-bordered">
+
+                <button type="submit" class="btn btn-primary">Filter</button>
+                @if (request('from_date') || request('to_date'))
+                    <a href="{{ route('orderListIndex') }}" class="btn bg-red-500 hover:bg-red-600 text-white border-none">Clear</a>
+                @endif
+            </div>
+        </div>
+    </form>
+
     <div class="overflow-x-auto">
         <table class="table table-s">
             <thead class="text-black">
                 <tr>
                     <th class="text-center">#</th>
                     <th class="text-center">Date</th>
-                    <th class="text-center">Total</th>
+                    <th class="text-center">Total (VAT Inc.)</th>
                     <th class="text-center">Cash</th>
                     <th class="text-center">Change</th>
                     <th class="text-center">Action</th>
@@ -19,7 +50,6 @@
             <tbody>
                 @forelse ($order as $orders)
                     <tr>
-
                         <td class="text-center">{{ $orders->id }}</td>
                         <td class="text-center">{{ $orders->order_date }}</td>
                         <td class="text-center">{{ $orders->total }}</td>
@@ -27,9 +57,8 @@
                         <td class="text-center">{{ $orders->change }}</td>
                         <td>
                             <div class="flex items-center gap-3 justify-center">
-
-                                {{-- View --}}
-                                <a href="{{ route('orderList.view', $orders->id) }}" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
+                                <a href="{{ route('orderList.view', $orders->id) }}"
+                                    class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -39,13 +68,11 @@
                                     </svg>
                                 </a>
 
-                        
-
-                                {{-- Delete --}}
-                                <form action=" {{ route('orderList.delete', $orders->id) }} " method="POST">
+                                <form action="{{ route('orderList.delete', $orders->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
+                                    <button type="submit"
+                                        class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -53,18 +80,14 @@
                                         </svg>
                                     </button>
                                 </form>
-
                             </div>
                         </td>
-
-
                     </tr>
-
-
                 @empty
-                    <td>No Item Found</td>
+                    <tr>
+                        <td colspan="6" class="text-center">No orders found</td>
+                    </tr>
                 @endforelse
-
             </tbody>
         </table>
         <div class="mt-4">

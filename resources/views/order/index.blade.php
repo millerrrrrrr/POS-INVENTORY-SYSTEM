@@ -113,40 +113,38 @@
         </div>
     </div>
 
-    <!-- RIGHT SIDE: PAYMENT -->
-    <div class="space-y-4">
-        <div class="card bg-base-100 shadow">
-            <div class="card-body">
-                <h2 class="card-title">Payment</h2>
+  <!-- RIGHT SIDE: PAYMENT -->
+<div class="space-y-4">
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Payment</h2>
 
-                @php
-                    $vatRate = 0.12;
-                    $vatAmount = $subtotal * $vatRate;
-                    $totalWithVat = $subtotal + $vatAmount;
-                @endphp
+            @php
+                $total = $subtotal; // VAT already included in product price
+            @endphp
 
-                <div class="text-lg font-semibold mb-2">
-                    Subtotal: ₱ {{ number_format($subtotal, 2) }}
-                </div>
-                <div class="text-lg font-semibold mb-2">
-                    VAT (12%): ₱ {{ number_format($vatAmount, 2) }}
-                </div>
-                <div class="text-xl font-bold mb-4">
-                    Total: ₱ {{ number_format($totalWithVat, 2) }}
-                </div>
-
-                <form id="checkout-form" action="{{ route('cart.checkout') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="total_with_vat" value="{{ $totalWithVat }}">
-                    <label class="label mt-4">Cash Received</label>
-                    <input type="number" step="0.01" name="cash"
-                        class="input input-bordered w-full focus:outline-none" required>
-                    <button type="submit" id="checkout-button" class="btn btn-primary mt-4 w-full">Complete Transaction</button>
-                </form>
+            <div class="text-2xl font-bold mb-4">
+                Total (VAT Inc.): ₱ {{ number_format($total, 2) }}
             </div>
+
+            <form id="checkout-form" action="{{ route('cart.checkout') }}" method="POST">
+                @csrf
+
+                <label class="label mt-4">Cash Received</label>
+                <input type="number" step="0.01" name="cash"
+                    class="input input-bordered w-full focus:outline-none" required>
+
+                <button type="submit"
+                        id="checkout-button"
+                        class="btn btn-primary mt-4 w-full">
+                    Complete Transaction
+                </button>
+            </form>
         </div>
     </div>
 </div>
+</div>
+
 
 <script>
     // AJAX live search

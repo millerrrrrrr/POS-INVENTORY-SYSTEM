@@ -19,10 +19,11 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $imagePath = null;
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('photos/products', 'public');
         }
-        // image
+
         $request->validate(
             [
                 'image' => 'nullable',
@@ -31,14 +32,17 @@ class ProductController extends Controller
                 'category' => 'required',
                 'description' => 'required',
                 'stock' => 'required',
-                'purchasePrice' => 'required',
-                'salePrice' => 'required',
+                'purchasePrice' => 'required|numeric',
+                'salePrice' => 'required|numeric',
             ],
             [
                 'barcode.unique' => 'Barcode already exists.',
                 'name.unique' => 'Product name already exists.'
             ]
         );
+
+        // ✅ Add 12% automatically
+        $salePriceWithTax = $request->salePrice * 1.12;
 
         if (Product::create([
             'image' => $imagePath,
@@ -48,10 +52,11 @@ class ProductController extends Controller
             'description' => $request->description,
             'stock' => $request->stock,
             'purchasePrice' => $request->purchasePrice,
-            'salePrice' => $request->salePrice,
+            'salePrice' => $salePriceWithTax,
         ])) {
             return back()->with('success', 'Product added successfully');
         }
+
         return back()->with('error', 'Failed');
     }
 

@@ -158,89 +158,76 @@ class OrderController extends Controller
     // =========================
     // CHECKOUT
     // =========================
-     public function checkout(Request $request)
-    {
-        $cart = session()->get('cart', []);
+    public function checkout(Request $request)
+{
+    $cart = session()->get('cart', []);
 
-        if (empty($cart)) {
-            return back()->with('error', 'Cart is empty.');
-        }
+    if (empty($cart)) {
+        return back()->with('error', 'Cart is empty.');
+    }
+
+    // =========================
+    // TOTAL (VAT already included in product price)
+    // =========================
+    $total = session('cart_total', 0);
+    $cash = $request->cash;
+
+    if ($cash < $total) {
+        return back()->with('error', 'Cash is insufficient.');
+    }
+
+    DB::beginTransaction();
+
+    try {
+        // =========================
+        // CREATE ORDER
+        // =========================
+        $order = Order::create([
+            'total' => $total,              // already VAT-inclusive
+            'vat' => 0,                     // no separate VAT
+            'total_with_vat' => $total,     // same as total
+            'cash' => $cash,
+            'change' => $cash - $total,
+            'order_date' => Carbon::now(),
+        ]);
 
         // =========================
-        // COMPUTE TOTALS
+        // CREATE ORDER ITEMS + UPDATE STOCK
         // =========================
-        $subtotal = session('cart_total', 0);
-        $vatRate = 0.12;
-        $vatAmount = $subtotal * $vatRate;
-        $totalWithVat = $subtotal + $vatAmount;
+        foreach ($cart as $productId => $item) {
+            $product = Product::lockForUpdate()->findOrFail($productId);
 
-        $cash = $request->cash;
-
-        if ($cash < $totalWithVat) {
-            return back()->with('error', 'Cash is insufficient.');
-        }
-
-        DB::beginTransaction();
-
-        try {
-            // =========================
-            // CREATE ORDER
-            // =========================
-            $order = Order::create([
-                'total' => $subtotal,
-                'vat' => $vatAmount,
-                'total_with_vat' => $totalWithVat,
-                'cash' => $cash,
-                'change' => $cash - $totalWithVat,
-                'order_date' => Carbon::now(),
-            ]);
-
-            // =========================
-            // CREATE ORDER ITEMS + UPDATE STOCK
-            // =========================
-            foreach ($cart as $productId => $item) {
-                $product = Product::lockForUpdate()->findOrFail($productId);
-
-                if ($item['quantity'] > $product->stock) {
-                    throw new \Exception("Insufficient stock for {$product->name}");
-                }
-
-                $product->decrement('stock', $item['quantity']);
-
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $productId,
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'subtotal' => $item['price'] * $item['quantity'],
-                ]);
+            if ($item['quantity'] > $product->stock) {
+                throw new \Exception("Insufficient stock for {$product->name}");
             }
 
-            // =========================
-            // SAVE EVERYTHING
-            // =========================
-            DB::commit();
+            $product->decrement('stock', $item['quantity']);
 
-            // =========================
-            // 🔥 PRINT RECEIPT (HERE!)
-            // =========================
-            ReceiptPrinter::print(
-                $order,
-                $order->items()->with('product')->get()
-            );
-
-            // =========================
-            // CLEAR CART
-            // =========================
-            session()->forget(['cart', 'cart_total']);
-
-            return back()->with('success', 'Transaction completed and receipt printed.');
-
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return back()->with('error', $e->getMessage());
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $productId,
+                'quantity' => $item['quantity'],
+                'price' => $item['price'], // already VAT included
+                'subtotal' => $item['price'] * $item['quantity'],
+            ]);
         }
+
+        DB::commit();
+
+        ReceiptPrinter::print(
+            $order,
+            $order->items()->with('product')->get()
+        );
+
+        session()->forget(['cart', 'cart_total']);
+
+        return back()->with('success', 'Transaction completed and receipt printed.');
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return back()->with('error', $e->getMessage());
     }
+}
 
     // =========================
     // AJAX SEARCH
