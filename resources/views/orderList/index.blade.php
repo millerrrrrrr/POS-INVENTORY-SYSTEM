@@ -29,7 +29,8 @@
 
                 <button type="submit" class="btn btn-primary">Filter</button>
                 @if (request('from_date') || request('to_date'))
-                    <a href="{{ route('orderListIndex') }}" class="btn bg-red-500 hover:bg-red-600 text-white border-none">Clear</a>
+                    <a href="{{ route('orderListIndex') }}"
+                        class="btn bg-red-500 hover:bg-red-600 text-white border-none">Clear</a>
                 @endif
             </div>
         </div>
@@ -68,11 +69,11 @@
                                     </svg>
                                 </a>
 
-                                <form action="{{ route('orderList.delete', $orders->id) }}" method="POST">
+                                <form action="{{ route('orderList.delete', $orders->id) }}" method="POST"
+                                    class="order-delete-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit"
-                                        class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
+                                    <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
