@@ -14,7 +14,7 @@
                             @csrf
                             <div class="form-control mb-4 ">
                                 <input type="text" name="category" placeholder="Enter category"
-                                    class="input input-bordered w-full focus:outline-none"  />
+                                    class="input input-bordered w-full focus:outline-none" />
                             </div>
                             <div class="form-control">
                                 <button type="submit" class="btn btn-primary w-full">Add</button>
@@ -60,7 +60,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <form action=" {{ route('deleteCategory', $cat->id) }} " method="POST">
+                                        <form action=" {{ route('deleteCategory', $cat->id) }} " method="POST" class="category-delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-error">
@@ -83,4 +83,40 @@
             </div>
         </div>
     </div>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".category-delete-form").forEach(function(form) {
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Delete Category?",
+                        text: "This will permanently delete the category.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
+
+
+
+
 @endsection

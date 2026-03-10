@@ -96,4 +96,38 @@
         </div>
     </div>
 
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".order-delete-form").forEach(function(form) {
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Delete Order?",
+                        text: "This will permanently delete the order and restore stock.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
+
+
 @endsection

@@ -14,40 +14,40 @@ use App\Http\Controllers\UtilitiyController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('/')->controller(LoginController::class)->middleware(['guest'])->group(function(){
+Route::prefix('/')->controller(LoginController::class)->middleware(['guest'])->group(function () {
     Route::get('/', 'login')->name('owner.login');
     Route::post('/', 'loginPost')->name('loginPost');
 });
 
 Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
 
-Route::prefix('dashboard')->controller(dashboardController::class)->middleware(['owner'])->group(function(){
+Route::prefix('dashboard')->controller(dashboardController::class)->middleware(['owner'])->group(function () {
     Route::get('/', 'index')->name('home');
 });
 
-Route::prefix('account')->controller(AccountController::class)->middleware(['owner'])->group(function(){
+Route::prefix('account')->controller(AccountController::class)->middleware(['owner'])->group(function () {
     Route::get('/change-password', 'changePasswordIndex')->name('changePasswordIndex');
     Route::post('/change-password', 'changePasswordPost')->name('changePasswordPost');
-    
+
     Route::get('settings', 'AccountSettings')->name('AccountSettings');
     Route::get('changeUsername', 'changeUsername')->name('changeUsername');
     Route::put('changeCreds', 'changeCreds')->name('changeCreds');
 });
 
-Route::prefix('category')->controller(CategoryController::class)->middleware(['owner'])->group(function(){
-    Route::get('/' ,'index')->name('categoryIndex');
-    
-    Route::post('/' ,'storeCategory')->name('storeCategory');
+Route::prefix('category')->controller(CategoryController::class)->middleware(['owner'])->group(function () {
+    Route::get('/', 'index')->name('categoryIndex');
+
+    Route::post('/', 'storeCategory')->name('storeCategory');
 
     Route::get('{id}/edit', 'editCategory')->name('editCategory');
     Route::put('{id}', 'updateCategory')->name('updateCategory');
     Route::delete('{id}', 'deleteCategory')->name('deleteCategory');
 });
 
-Route::prefix('product')->controller(ProductController::class)->middleware(['owner'])->group(function(){
+Route::prefix('product')->controller(ProductController::class)->middleware(['owner'])->group(function () {
 
     Route::get('/', 'add')->name('addProduct');
-    Route::post('/','store')->name('storeProduct');
+    Route::post('/', 'store')->name('storeProduct');
 
     Route::get('list', 'productList')->name('productList');
 
@@ -57,16 +57,15 @@ Route::prefix('product')->controller(ProductController::class)->middleware(['own
     Route::delete('{id}', 'deleteProduct')->name('deleteProduct');
 });
 
-Route::prefix('stock')->controller(StockController::class)->middleware(['owner'])->group(function(){
-   
+Route::prefix('stock')->controller(StockController::class)->middleware(['owner'])->group(function () {
+
     Route::get('/', 'index')->name('stockIndex');
     Route::get('{id}/restock', 'restockIndex')->name('restockIndex');
     Route::post('{id}/restock', 'restock')->name('restock');
-
 });
 
-Route::prefix('utilities')->controller(UtilitiyController::class)->middleware(['owner'])->group(function(){
-   
+Route::prefix('utilities')->controller(UtilitiyController::class)->middleware(['owner'])->group(function () {
+
     Route::get('/', 'index')->name('utilityIndex');
     Route::get('/productArchive', 'productArchive')->name('productArchive');
 
@@ -81,15 +80,23 @@ Route::prefix('utilities')->controller(UtilitiyController::class)->middleware(['
 
     Route::post('productArchive/{id}', 'productRestore')->name('productRestore');
     Route::delete('productArchive/{id}', 'productForceDelete')->name('productForceDelete');
+
+
+
+
+    Route::get('/backup', 'backupIndex')->name('backupIndex');                 // show backup page
+    Route::get('/backup/create', 'backupDatabase')->name('backup.database');   // create new backup
+    Route::get('/backup/download/{filename}', 'downloadBackup')->name('backup.download'); // download backup
+    Route::delete('/backup/delete/{filename}', 'deleteBackup')->name('backup.delete');    // delete backup
 });
 
 // Route::prefix('order')->controller(OrderController::class)->middleware(['owner'])->group(function(){
-   
+
 //     Route::get('/', 'orderIndex')->name('orderIndex');
 
 // });
 
-Route::prefix('order')->controller(OrderController::class)->middleware(['owner'])->group(function(){
+Route::prefix('order')->controller(OrderController::class)->middleware(['owner'])->group(function () {
     Route::get('/', 'orderIndex')->name('orderIndex');
     Route::get('/search/ajax', 'ajaxSearch')->name('order.ajaxSearch');
 
@@ -103,25 +110,28 @@ Route::prefix('order')->controller(OrderController::class)->middleware(['owner']
 
 
 
-Route::prefix('orderList')->controller(OrderListController::class)->middleware(['owner'])->group(function(){
-    
+Route::prefix('orderList')->controller(OrderListController::class)->middleware(['owner'])->group(function () {
+
     Route::get('/', 'orderListIndex')->name('orderListIndex');
     Route::get('/view/{id}', 'viewOrder')->name('orderList.view');
 
     Route::delete('/delete/{id}', 'destroy')->name('orderList.delete');
-
 });
 
 
 
-Route::prefix('orderHistory')->controller(OrderHistoryController::class)->middleware(['owner'])->group(function(){
-    
+Route::prefix('orderHistory')->controller(OrderHistoryController::class)->middleware(['owner'])->group(function () {
+
     Route::get('/', 'index')->name('orderHistoryIndex');
-
 });
 
 
-Route::prefix('salesReport')->controller(SalesReportController::class)->middleware(['owner'])->group(function(){
+Route::prefix('salesReport')->controller(SalesReportController::class)->middleware(['owner'])->group(function () {
     Route::get('/', 'index')->name('salesReport.index');
     Route::get('/print', 'print')->name('salesReport.print'); // for A4 print
+});
+
+
+Route::get('/phpinfo', function() {
+    phpinfo();
 });

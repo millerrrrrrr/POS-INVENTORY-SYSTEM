@@ -30,7 +30,8 @@
 
 
 
-                                <a href="{{ route('DeletedOrderList.view', $orders->id) }}" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
+                                <a href="{{ route('DeletedOrderList.view', $orders->id) }}"
+                                    class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -41,7 +42,7 @@
                                 </a>
 
                                 {{-- Delete --}}
-                                <form action=" {{ route('orderList.restore', $orders->id) }} " method="POST">
+                                <form action=" {{ route('orderList.restore', $orders->id) }} " method="POST" class="order-restore-form">
                                     @csrf
                                     <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -53,12 +54,13 @@
                                     </button>
                                 </form>
 
-                                
+
 
 
 
                                 {{-- Delete --}}
-                                <form action="{{ route('orderList.forceDelete', $orders->id) }}" method="POST">
+                                <form action="{{ route('orderList.forceDelete', $orders->id) }}" method="POST"
+                                    class="utilOrder-delete-form">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
@@ -79,7 +81,6 @@
 
                 @empty
                     <td class="text-center ">No Item Found</td>
-                    
                 @endforelse
 
             </tbody>
@@ -88,5 +89,68 @@
             {{ $order->links('vendor.pagination.simple-tailwind') }}
         </div>
     </div>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".utilOrder-delete-form").forEach(function(form) {
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Delete Order?",
+                        text: "This will permanently delete the order and restore stock.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+        
+
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".order-restore-form").forEach(function(form) {
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Restore Order?",
+                        text: "This will restore the order and deduct the product stock again.",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonColor: "#16a34a",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, restore it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
 
 @endsection

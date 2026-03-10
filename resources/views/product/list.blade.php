@@ -100,7 +100,7 @@
                                 </a>
 
                                 {{-- Delete --}}
-                                <form action=" {{ route('deleteProduct', $pro->id) }} " method="POST">
+                                <form action=" {{ route('deleteProduct', $pro->id) }} " method="POST" class="product-delete-form">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
@@ -129,5 +129,37 @@
             {{ $products->links('vendor.pagination.simple-tailwind') }}
         </div>
     </div>
+
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".product-delete-form").forEach(function(form) {
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Delete Product?",
+                        text: "This will permanently delete the product.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
+
 
 @endsection

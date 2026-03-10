@@ -36,7 +36,7 @@
             <h2 class="card-title text-lg font-bold">Backup</h2>
             <p>Create database backups, download, or restore previous backups to ensure data safety.</p>
             <div class="card-actions justify-end mt-4">
-                <a href="" 
+                <a href=" {{ route('backupIndex') }} " 
                    class="btn btn-primary">Manage Backups</a>
             </div>
         </div>

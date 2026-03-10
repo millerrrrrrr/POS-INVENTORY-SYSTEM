@@ -42,7 +42,7 @@
                             <div class="flex items-center gap-3 justify-center">
 
                                 {{-- Delete --}}
-                                <form action=" {{ route('productRestore', $pro->id) }} " method="POST">
+                                <form action=" {{ route('productRestore', $pro->id) }} " method="POST" class="product-restore-form">
                                     @csrf
                                     <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -57,7 +57,8 @@
 
 
                                 {{-- Delete --}}
-                                <form action="{{ route('productForceDelete', $pro->id) }}" method="POST">
+                                <form action="{{ route('productForceDelete', $pro->id) }}" method="POST"
+                                    class="utilProduct-delete-form">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
@@ -78,5 +79,68 @@
             </tbody>
         </table>
     </div>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".utilProduct-delete-form").forEach(function(form) {
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Delete Product?",
+                        text: "This will permanently delete the product.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+
+
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".product-restore-form").forEach(function(form) {
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Restore Product?",
+                        text: "This will restore the deleted product.",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonColor: "#16a34a",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, restore it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
 
 @endsection
