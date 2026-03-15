@@ -37,24 +37,25 @@
                                 <td>
                                     <div class="flex items-center gap-3 justify-center">
 
-
-
                                         {{-- Download --}}
-                                        <a href="" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
+                                        <a href="{{ route('backup.download', $file->getFilename()) }}"
+                                            class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white backup-download-btn"
+                                            title="Download">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                             </svg>
-
                                         </a>
 
                                         {{-- Delete --}}
-                                        <form action="" method="POST" class="product-delete-form">
+                                        <form action="{{ route('backup.delete', $file->getFilename()) }}" method="POST"
+                                            class="backup-delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
+                                                class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white"
+                                                title="Delete">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -65,21 +66,7 @@
 
                                     </div>
                                 </td>
-                                {{-- <td class="px-4 py-2 flex gap-2">
-                                    <a href="{{ route('backup.download', $file->getFilename()) }}"
-                                        class="btn bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded">
-                                        Download
-                                    </a>
-                                    <form action="{{ route('backup.delete', $file->getFilename()) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="btn bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
-                                            onclick="return confirm('Are you sure you want to delete this backup?');">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td> --}}
+
                             </tr>
                         @endforeach
                     </tbody>
@@ -88,6 +75,60 @@
         @else
             <p>No backups found.</p>
         @endif
-
+        <div class="mt-4">
+            {{ $backups->links('vendor.pagination.simple-tailwind') }}
+        </div>
     </div>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // Delete backup confirmation
+            document.querySelectorAll(".backup-delete-form").forEach(function(form) {
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Delete Backup?",
+                        text: "This will permanently delete the backup file.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+            // Download backup confirmation
+            document.querySelectorAll(".backup-download-btn").forEach(function(link) {
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Download Backup?",
+                        text: "Do you want to download this backup file?",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonColor: "#16a34a",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, download it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = link.href;
+                        }
+                    });
+                });
+            });
+
+        });
+    </script>
 @endsection

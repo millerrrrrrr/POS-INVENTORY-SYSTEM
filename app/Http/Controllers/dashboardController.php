@@ -41,6 +41,22 @@ class dashboardController extends Controller
         $startOfMonth = Carbon::now()->startOfMonth();
         $endOfMonth = Carbon::now()->endOfMonth();
 
+
+
+        // ✅ Weekly sales
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        $totalSalesWeek = Order::whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->sum('total_with_vat');
+
+        // // ✅ Monthly sales
+        // $startOfMonth = Carbon::now()->startOfMonth();
+        // $endOfMonth = Carbon::now()->endOfMonth();
+
+        $totalSalesMonth = Order::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('total_with_vat');
+
         // Top 5 best selling products this month
         $bestSellingProducts = DB::table('order_items')
             ->select('product_id', DB::raw('SUM(quantity) as total_sold'))
@@ -82,6 +98,8 @@ class dashboardController extends Controller
         return view('dashboard.home', compact(
             'totalOrdersToday',
             'totalSalesToday',
+            'totalSalesWeek',
+            'totalSalesMonth',
             'lowStockProducts',
             'totalProducts',
             'outOfStockProducts',

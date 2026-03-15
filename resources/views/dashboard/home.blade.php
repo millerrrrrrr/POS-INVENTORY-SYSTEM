@@ -47,6 +47,33 @@
             </div>
         </div>
 
+
+        {{-- Weekly Sales --}}
+
+        <div class="bg-gray-300 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                    Total Sales This Week
+                </h2>
+                <p class="text-2xl font-bold text-gray-900 mb-4">
+                    ₱ {{ number_format($totalSalesWeek, 2) }}
+                </p>
+            </div>
+        </div>
+
+        {{-- Monthly Sales --}}
+
+        <div class="bg-gray-300 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                    Total Sales This Month
+                </h2>
+                <p class="text-2xl font-bold text-gray-900 mb-4">
+                    ₱ {{ number_format($totalSalesMonth, 2) }}
+                </p>
+            </div>
+        </div>
+
         <!-- Out of Stocks -->
         <div class="bg-gray-300 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
             <div class="p-6">

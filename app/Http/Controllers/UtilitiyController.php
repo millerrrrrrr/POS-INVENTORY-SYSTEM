@@ -9,8 +9,14 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+
+
+
 
 
 class UtilitiyController extends Controller
@@ -100,19 +106,34 @@ class UtilitiyController extends Controller
     }
 
 
-    public function backupIndex()
-    {
-        $backupPath = storage_path('backups');
-        if (!File::exists($backupPath)) {
-            File::makeDirectory($backupPath, 0755, true);
-        }
+    // BACK UP
 
-        $backups = collect(File::files($backupPath))->sortByDesc(function ($file) {
-            return $file->getCTime();
-        });
 
-        return view('utilities.backupIndex', compact('backups'));
+
+   public function backupIndex(Request $request)
+{
+    $backupPath = storage_path('backups');
+    if (!File::exists($backupPath)) {
+        File::makeDirectory($backupPath, 0755, true);
     }
+
+    $files = collect(File::files($backupPath))->sortByDesc(fn($file) => $file->getCTime());
+
+    // Pagination
+    $perPage = 8;
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    $currentItems = $files->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+    $backups = new LengthAwarePaginator(
+        $currentItems,
+        $files->count(),
+        $perPage,
+        $currentPage,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
+
+    return view('utilities.backupIndex', compact('backups'));
+}
 
     // public function backupDatabase()
     // {
@@ -141,7 +162,7 @@ class UtilitiyController extends Controller
     {
         $database = config('database.connections.mysql.database');
         $username = config('database.connections.mysql.username');
-        $password = config('database.connections.mysql.password');
+        $password = config('database.connections.mysql.password'); // might be empty
         $host = config('database.connections.mysql.host');
 
         $backupPath = storage_path('backups');
@@ -149,31 +170,30 @@ class UtilitiyController extends Controller
             mkdir($backupPath, 0755, true);
         }
 
-        $filename = $backupPath . '/backup-' . date('Y-m-d_H-i-s') . '.sql';
+        $filename = $backupPath . "/backup-" . date('Y-m-d_H-i-s') . ".sql";
 
-        // Path to mysqldump in XAMPP
-        $mysqldump = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
+        // Build mysqldump command safely
+        $command = "mysqldump --user={$username} ";
 
-        $command = [
-            $mysqldump,
-            '-u' . $username,
-            '-p' . $password,
-            '-h' . $host,
-            $database
-        ];
-
-        $process = new Process($command);
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            return back()->with('error', 'Backup failed: ' . $process->getErrorOutput());
+        // Only include password if it's not empty
+        if (!empty($password)) {
+            $command .= "--password='{$password}' ";
         }
 
-        file_put_contents($filename, $process->getOutput());
+        $command .= "--host={$host} {$database} > {$filename} 2>&1";
+
+        // Execute the command
+        $output = [];
+        $return_var = 0;
+        exec($command, $output, $return_var);
+
+        // Check for errors
+        if ($return_var !== 0) {
+            return back()->with('error', 'Backup failed: ' . implode("\n", $output));
+        }
 
         return redirect()->route('backupIndex')->with('success', 'Backup created successfully!');
     }
-
 
 
 
