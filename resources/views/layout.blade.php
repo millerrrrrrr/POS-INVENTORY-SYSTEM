@@ -15,7 +15,10 @@
     <div class="w-full md:w-64 bg-base-200 p-6 flex flex-col justify-between">
         <!-- Top Links -->
         <div>
-            <h1 class="text-2xl font-bold mb-8">Rhaw Motor Shop</h1>
+            <div class="flex items-center mb-8">
+                <img src="{{ asset('images/logo.png') }}" alt="Rhaw Motor Shop Logo" class="h-15 w-15 mr-3">
+                <h1 class="text-md font-bold">Rhaw Motor Shop</h1>
+            </div>
             <ul class="menu space-y-2 w-full">
                 <li>
                     <a href=" {{ route('home') }} "
