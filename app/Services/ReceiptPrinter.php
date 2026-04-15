@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\EscposImage;
 
 class ReceiptPrinter
 {
@@ -14,15 +15,64 @@ class ReceiptPrinter
 
         $lineWidth = 32;
 
-        // ===== HEADER =====
+        // ===== LOGO =====
         $printer->setJustification(Printer::JUSTIFY_CENTER);
+
+        $logoPath = public_path('images/logo.png');
+
+        if (file_exists($logoPath)) {
+            try {
+                // Load image using GD
+                $img = imagecreatefrompng($logoPath);
+
+                // Get original size
+                $origWidth = imagesx($img);
+                $origHeight = imagesy($img);
+
+                // Set desired width for 58mm printer (adjust 180–250 as needed)
+                $newWidth = 200;
+                $ratio = $origHeight / $origWidth;
+                $newHeight = (int)($newWidth * $ratio);
+
+                // Create resized canvas
+                $tmp = imagecreatetruecolor($newWidth, $newHeight);
+
+                // Preserve transparency (important for PNG logos)
+                imagecolortransparent($tmp, imagecolorallocatealpha($tmp, 0, 0, 0, 127));
+                imagealphablending($tmp, false);
+                imagesavealpha($tmp, true);
+
+                // Resize
+                imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+
+                // Save temporary file
+                $tempPath = storage_path('app/temp_logo.png');
+                imagepng($tmp, $tempPath);
+
+                // Print resized image
+                $logo = EscposImage::load($tempPath, false);
+                $printer->bitImage($logo);
+
+                $printer->feed();
+
+                // Cleanup
+                imagedestroy($img);
+                imagedestroy($tmp);
+                @unlink($tempPath);
+            } catch (\Exception $e) {
+                // Optional logging
+                // \Log::error("Logo print failed: " . $e->getMessage());
+            }
+        }
+
+        // ===== HEADER =====
         $printer->setTextSize(2, 2);
-        $printer->text("Rhaw Motor Shop\n");  // Shop Name
+        $printer->text("Rhaw Motor Shop\n");
 
         $printer->setTextSize(1, 1);
-        $printer->text("TIN: 123-456-789\n");  // <-- Edit your TIN here
-        $printer->text("Contact: 0912-345-6789\n");  // <-- Edit contact number
-        $printer->text("Address: Purok 2 Sto. Niño, San Felipe, Zambales\n");  // <-- Edit address
+        $printer->text("TIN: 665-856-591-00000\n");
+        $printer->text("Contact: 0991-192-2530\n");
+        $printer->text("Address: Purok 6 Sto. Niño, San Felipe, Zambales\n");
         $printer->text("Official Receipt\n\n");
 
         // ===== ORDER INFO =====
@@ -66,7 +116,7 @@ class ReceiptPrinter
         $dots = str_repeat('.', $lineWidth - strlen("Change") - strlen($changeLine));
         $printer->text("Change" . $dots . $changeLine . "\n\n");
 
-        // ===== VAT (Extracted) =====
+        // ===== VAT =====
         $vatLine = "PHP" . number_format($vatAmount, 2);
         $dots = str_repeat('.', $lineWidth - strlen("VAT (12%)") - strlen($vatLine));
         $printer->text("VAT (12%)" . $dots . $vatLine . "\n\n");
