@@ -2,6 +2,9 @@ import "./bootstrap";
 
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import Chart from 'chart.js/auto';
+
+window.Chart = Chart;
 
 window.Swal = Swal;
 
