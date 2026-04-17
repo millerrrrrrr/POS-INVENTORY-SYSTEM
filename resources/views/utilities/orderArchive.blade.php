@@ -1,6 +1,6 @@
 @extends('layout')
-@section('title', 'Archived Order List')
-@section('pagetitle', 'Archived Order List')
+@section('title', 'View Archived Order List')
+@section('pagetitle', 'View Archived Order List')
 
 @section('main')
 

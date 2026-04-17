@@ -119,8 +119,6 @@ Route::prefix('orderList')->controller(OrderListController::class)->middleware([
     Route::delete('/delete/{id}', 'destroy')->name('orderList.delete');
 });
 
-
-
 Route::prefix('orderHistory')->controller(OrderHistoryController::class)->middleware(['owner'])->group(function () {
 
     Route::get('/', 'index')->name('orderHistoryIndex');

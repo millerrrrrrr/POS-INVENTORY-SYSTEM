@@ -1,6 +1,6 @@
 @extends('layout')
-@section('title', 'View Order')
-@section('pagetitle', 'Order #'.$order->id)
+@section('title', 'View Deleted Order')
+@section('pagetitle', 'Deleted Order #'.$order->id)
 
 @section('main')
 
