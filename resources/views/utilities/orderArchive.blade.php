@@ -16,7 +16,7 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="[&_tr:nth-child(even)]:bg-gray-200 [&_tr:nth-child(odd)]:bg-gray-300">
                 @forelse ($order as $orders)
                     <tr>
 
@@ -42,7 +42,8 @@
                                 </a>
 
                                 {{-- Delete --}}
-                                <form action=" {{ route('orderList.restore', $orders->id) }} " method="POST" class="order-restore-form">
+                                <form action=" {{ route('orderList.restore', $orders->id) }} " method="POST"
+                                    class="order-restore-form">
                                     @csrf
                                     <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -80,7 +81,11 @@
 
 
                 @empty
-                    <td class="text-center ">No Item Found</td>
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            No Item Found
+                        </td>
+                    </tr>
                 @endforelse
 
             </tbody>
@@ -120,7 +125,7 @@
             });
 
         });
-        
+
 
 
 

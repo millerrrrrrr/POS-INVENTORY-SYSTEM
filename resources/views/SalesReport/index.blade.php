@@ -23,7 +23,7 @@
 
 <div class="overflow-x-auto">
     <table class="table table-s">
-        <thead>
+        <thead class="text-black">
             <tr>
                 <th>#</th>
                 <th>Date</th>
@@ -32,7 +32,7 @@
                 <th>Change</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="[&_tr:nth-child(even)]:bg-gray-200 [&_tr:nth-child(odd)]:bg-gray-300">
             @forelse($orders as $order)
                 <tr>
                     <td>{{ $order->id }}</td>

@@ -11,7 +11,6 @@
         <!-- BARCODE SCAN -->
         <div class="card bg-base-100 shadow">
             <div class="card-body">
-                <h2 class="card-title">Scan Barcode</h2>
                 <form id="barcode-form" method="POST" action="{{ route('cart.addByBarcode') }}" class="flex gap-2">
                     @csrf
                     <input type="text" name="barcode" placeholder="Scan or type barcode"
@@ -24,8 +23,6 @@
         <!-- SEARCH PRODUCTS -->
         <div class="card bg-base-100 shadow">
             <div class="card-body">
-                <h2 class="card-title">Search Products</h2>
-
                 <form method="GET" action="{{ route('orderIndex') }}" class="flex gap-2">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search product..."
                         class="input input-bordered w-full focus:outline-none">
@@ -34,7 +31,7 @@
 
                 <!-- PRODUCT LIST -->
                 @if($products->count() > 0)
-                <div class="overflow-y-auto max-h-80 mt-4">
+                <div class="overflow-y-auto max-h-[500px] mt-4">
                     <table class="table table-zebra">
                         <thead class="bg-base-100 sticky top-0 z-10">
                             <tr>
@@ -59,92 +56,97 @@
             </div>
         </div>
 
-        <!-- CART -->
+    </div>
+
+    <!-- RIGHT SIDE: CART + PAYMENT -->
+    <div class="space-y-4">
+
+        <!-- CART (TOP RIGHT) -->
         <div class="card bg-base-100 shadow">
             <div class="card-body">
                 <h2 class="card-title">Cart</h2>
 
                 @if (session('cart') && count(session('cart')) > 0)
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Qty</th>
-                                <th>Price</th>
-                                <th>Subtotal</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php $subtotal = 0; @endphp
-                            @foreach (session('cart') as $id => $details)
-                                @php
-                                    $itemSubtotal = $details['price'] * $details['quantity'];
-                                    $subtotal += $itemSubtotal;
-                                @endphp
+                    <div class="overflow-y-auto max-h-64">
+                        <table class="table">
+                            <thead class="bg-base-100 sticky top-0 z-10">
                                 <tr>
-                                    <td>{{ $details['name'] }}</td>
-                                    <td>
-                                        <form action="{{ route('cart.update', $id) }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="number" name="quantity" value="{{ $details['quantity'] }}"
-                                                min="1" class="input input-bordered w-16 cart-qty">
-                                        </form>
-                                    </td>
-                                    <td>{{ number_format($details['price'], 2) }}</td>
-                                    <td>{{ number_format($itemSubtotal, 2) }}</td>
-                                    <td>
-                                        <form action="{{ route('cart.remove', $id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-error text-white">X</button>
-                                        </form>
-                                    </td>
+                                    <th>Product</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Subtotal</th>
+                                    <th></th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @php $subtotal = 0; @endphp
+                                @foreach (session('cart') as $id => $details)
+                                    @php
+                                        $itemSubtotal = $details['price'] * $details['quantity'];
+                                        $subtotal += $itemSubtotal;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $details['name'] }}</td>
+                                        <td>
+                                            <form action="{{ route('cart.update', $id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="number" name="quantity" value="{{ $details['quantity'] }}"
+                                                    min="1" class="input input-bordered w-16 cart-qty">
+                                            </form>
+                                        </td>
+                                        <td>{{ number_format($details['price'], 2) }}</td>
+                                        <td>{{ number_format($itemSubtotal, 2) }}</td>
+                                        <td>
+                                            <form action="{{ route('cart.remove', $id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-error text-white">X</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 @else
+                    @php $subtotal = 0; @endphp
                     <p class="text-gray-500">Cart is empty</p>
                 @endif
 
             </div>
         </div>
-    </div>
 
-  <!-- RIGHT SIDE: PAYMENT -->
-<div class="space-y-4">
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">Payment</h2>
+        <!-- PAYMENT (BOTTOM RIGHT) -->
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <h2 class="card-title">Payment</h2>
 
-            @php
-                $total = $subtotal; // VAT already included in product price
-            @endphp
+                @php
+                    $total = $subtotal ?? 0;
+                @endphp
 
-            <div class="text-2xl font-bold mb-4">
-                Total (VAT Inc.): ₱ {{ number_format($total, 2) }}
+                <div class="text-2xl font-bold mb-4">
+                    Total (VAT Inc.): ₱ {{ number_format($total, 2) }}
+                </div>
+
+                <form id="checkout-form" action="{{ route('cart.checkout') }}" method="POST">
+                    @csrf
+
+                    <label class="label mt-4">Cash Received</label>
+                    <input type="number" step="0.01" name="cash"
+                        class="input input-bordered w-full focus:outline-none" required>
+
+                    <button type="submit"
+                            class="btn btn-primary mt-4 w-full">
+                        Complete Transaction
+                    </button>
+                </form>
             </div>
-
-            <form id="checkout-form" action="{{ route('cart.checkout') }}" method="POST">
-                @csrf
-
-                <label class="label mt-4">Cash Received</label>
-                <input type="number" step="0.01" name="cash"
-                    class="input input-bordered w-full focus:outline-none" required>
-
-                <button type="submit"
-                        id="checkout-button"
-                        class="btn btn-primary mt-4 w-full">
-                    Complete Transaction
-                </button>
-            </form>
         </div>
+
     </div>
 </div>
-</div>
-
 
 <script>
     // AJAX live search
@@ -168,7 +170,7 @@
                 method: "POST",
                 body: formData
             }).then(() => {
-                location.reload(); // refresh totals
+                location.reload();
             });
         }
     });

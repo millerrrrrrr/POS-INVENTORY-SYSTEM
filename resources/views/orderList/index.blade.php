@@ -48,7 +48,7 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="[&_tr:nth-child(even)]:bg-gray-200 [&_tr:nth-child(odd)]:bg-gray-300">
                 @forelse ($order as $orders)
                     <tr>
                         <td class="text-center">{{ $orders->id }}</td>

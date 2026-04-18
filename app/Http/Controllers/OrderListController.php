@@ -26,7 +26,7 @@ class OrderListController extends Controller
             $query->whereDate('order_date', '<=', $request->input('to_date'));
         }
 
-        $order = $query->latest()->paginate(10)->withQueryString(); // preserve filters in pagination
+        $order = $query->latest()->paginate(9)->withQueryString(); // preserve filters in pagination
 
         return view('orderList.index', compact('order'));
     }

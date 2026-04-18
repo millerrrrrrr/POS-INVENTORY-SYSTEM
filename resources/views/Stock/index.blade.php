@@ -1,6 +1,6 @@
 @extends('layout')
-@section('title', 'Product List')
-@section('pagetitle', 'Product List')
+@section('title', 'Stock Management')
+@section('pagetitle', 'Stock Management')
 
 @section('main')
 
@@ -15,7 +15,7 @@
                     <th class="text-center">Restock</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody >
                 @forelse ($products as $pro)
                     <tr
                         @if ($pro->stock == 0) class="bg-red-100 text-red-800 font-semibold"
