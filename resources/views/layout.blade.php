@@ -10,7 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="min-h-screen flex flex-col md:flex-row bg-gray-100">
+<body class="h-screen flex flex-col md:flex-row bg-gray-100">
     <!-- Sidebar -->
     <div class="w-full md:w-64 bg-base-200 p-6 flex flex-col justify-between">
         <!-- Top Links -->
@@ -108,14 +108,14 @@
                         Utilities
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href=" {{ route('salesReportIndex') }} "
                         class="block w-full px-4 py-2 rounded-lg font-medium transition
               border-2 border-transparent
               hover:bg-base-300 hover:border-2 hover:border-white">
                         Sales Report
                     </a>
-                </li>
+                </li> --}}
 
             </ul>
         </div>
@@ -158,7 +158,7 @@
     <!-- Main content -->
     <div class="flex-1 flex flex-col p-4 md:p-10">
         <!-- Wrapper with rounded corners -->
-        <div class="rounded-2xl overflow-hidden shadow-lg">
+        <div class="rounded-2xl overflow-hidden  shadow-lg">
             <!-- Title Bar -->
             <div class="bg-base-200 px-6 py-3 md:px-8 md:py-4">
                 <h1 class="text-xl md:text-2xl font-bold">@yield('pagetitle')</h1>

@@ -11,12 +11,12 @@
 
 
 
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Product Image</label>
+            <div class="">
+                <label class="block text-xl font-semibold text-gray-700 mb-2">Product Image</label>
 
                 @if ($product->image)
                     <img src=" {{ asset('storage/' . $product->image) }} " alt=" {{ $product->name }} "
-                        class="w-[auto] h-[auto] object-cover rounded-md ">
+                        class="w-[300px] h-[300px] object-cover rounded-md">
                 @else
                     <div
                         class="w-[auto] h-[500px] bg-gray-200  rounded-md flex items-center justify-center text-gray500 text-cs text-center">
@@ -128,6 +128,7 @@
             </div>
 
         </div>
+    </div>
 
 
-    @endsection
+@endsection

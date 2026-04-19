@@ -5,7 +5,7 @@
 @section('main')
 
     <div class="overflow-x-auto">
-        <table class="table table-s">
+        <table class="table table-xs">
             <thead class="text-black">
                 <tr>
                     <th class="text-center">Image</th>
@@ -15,7 +15,7 @@
                     <th class="text-center">Restock</th>
                 </tr>
             </thead>
-            <tbody >
+            <tbody class="font-semibold">
                 @forelse ($products as $pro)
                     <tr
                         @if ($pro->stock == 0) class="bg-red-100 text-red-800 font-semibold"

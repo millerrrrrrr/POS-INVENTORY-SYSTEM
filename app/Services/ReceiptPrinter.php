@@ -18,7 +18,7 @@ class ReceiptPrinter
         // ===== LOGO =====
         $printer->setJustification(Printer::JUSTIFY_CENTER);
 
-        $logoPath = public_path('images/logo.png');
+        $logoPath = public_path('images/logoReceipt.png');
 
         if (file_exists($logoPath)) {
             try {

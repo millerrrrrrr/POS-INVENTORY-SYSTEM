@@ -4,7 +4,7 @@
 
 @section('main')
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Total Orders Today -->
         <div class="bg-gray-300 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
             <div class="p-6">
@@ -40,12 +40,12 @@
         </div>
 
         <!-- Total Products -->
-        <div class="bg-gray-300 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
+        {{-- <div class="bg-gray-300 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
             <div class="p-6">
                 <h2 class="text-lg font-semibold text-gray-700 mb-2">Total Products</h2>
                 <p class="text-2xl font-bold text-gray-900 mb-4"> {{ $totalProducts }} </p>
             </div>
-        </div>
+        </div> --}}
 
 
         {{-- Weekly Sales --}}
@@ -88,7 +88,7 @@
     </div>
 
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Recent Transactions Today (matching card style) -->
         <div

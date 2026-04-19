@@ -13,7 +13,7 @@ class StockController extends Controller
         $lowStockLevel = 10;
 
         // Paginated products
-        $products = Product::orderBy('stock', 'asc')->paginate(8);
+        $products = Product::orderBy('stock', 'asc')->paginate(9);
 
         
 

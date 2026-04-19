@@ -33,7 +33,7 @@
                         <button class="btn join-item btn-primary " type="submit">Find</button>
 
                     </div>
-                    <a href="{{ route('categoryIndex') }}" class="btn  bg-base-300  ml-auto">
+                    <a href="{{ route('categoryIndex') }}" class="btn  bg-red-500 hover:bg-red-600 border-none  ml-auto">
                         Clear
                     </a>
                 </form>

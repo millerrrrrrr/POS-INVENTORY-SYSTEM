@@ -28,7 +28,7 @@
 </form>
 
     <div class="overflow-x-auto">
-        <table class="table table-s">
+        <table class="table table-xs">
             <thead class="text-black">
                 <tr>
                     <th class="text-center">Image</th>
@@ -42,10 +42,10 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            <tbody  class="[&_tr:nth-child(even)]:bg-gray-200 [&_tr:nth-child(odd)]:bg-gray-300">
+            <tbody  class="[&_tr:nth-child(even)]:bg-gray-200 [&_tr:nth-child(odd)]:bg-gray-300  font-semibold">
                 @forelse ($products as $pro)
                     <tr>
-                        <td class="flex justify-center">
+                        <td class="flex justify-center ">
                             @if ($pro->image)
                                 <img src=" {{ asset('storage/' . $pro->image) }} " alt=" {{ $pro->name }} "
                                     class="w-16 h-16 object-cover rounded-md ">
