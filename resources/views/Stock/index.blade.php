@@ -4,6 +4,32 @@
 
 @section('main')
 
+    <form method="GET" action="{{ route('stockIndex') }}" class="mb-4">
+        <div class="flex gap-2 items-center text-white">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search product..."
+                class="input input-bordered w-full max-w-xs">
+
+            <select name="category" class="select select-bordered w-3xs text-white">
+                <option disabled selected value="">All Categories</option>
+                @foreach ($categories as $cat)
+                    <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>
+                        {{ $cat }}
+                    </option>
+                @endforeach
+            </select>
+
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+
+            @if (request()->has('search') && request('search') !== '')
+                <a href="{{ route('stockIndex') }}" class="btn bg-red-500 hover:bg-red-600 text-white border-none">
+                    Clear
+                </a>
+            @endif
+        </div>
+    </form>
+
     <div class="overflow-x-auto">
         <table class="table table-xs">
             <thead class="text-black">
@@ -47,7 +73,8 @@
                             @elseif ($pro->stock <= $lowStockLevel)
                                 <span
                                     class="px-2 py-1 bg-yellow-200 text-yellow-900 rounded-md font-bold">{{ $pro->stock }}
-                                    (Low)</span>
+                                    (Low)
+                                </span>
                             @else
                                 {{ $pro->stock }}
                             @endif
@@ -60,7 +87,8 @@
 
 
                                 {{-- Restock --}}
-                                <a href=" {{ route('restockIndex', $pro->id) }} " class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
+                                <a href=" {{ route('restockIndex', $pro->id) }} "
+                                    class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -73,7 +101,11 @@
                         </td>
                     </tr>
                 @empty
-                    <td colspan="5" class="text-center">No Item Found</td>
+                    <tr>
+                        <td colspan="5" class="text-center py-6 text-gray-500 bg-gray-200 font-semibold">
+                            No Item Found
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>

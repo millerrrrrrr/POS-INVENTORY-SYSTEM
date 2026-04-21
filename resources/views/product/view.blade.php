@@ -116,12 +116,11 @@
                     Edit
                 </a>
 
-                <form action="" method="POST">
+                <form action="" method="POST" class="view-product-delete">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
-                        class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700"
-                        onclick="return confirm('Are you sure you want to delete this product?')">
+                        class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700">
                         Delete
                     </button>
                 </form>
@@ -130,5 +129,35 @@
         </div>
     </div>
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".view-product-delete").forEach(function(form) {
+
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: "Delete Product?",
+                        text: "This will permanently delete the product.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
 
 @endsection

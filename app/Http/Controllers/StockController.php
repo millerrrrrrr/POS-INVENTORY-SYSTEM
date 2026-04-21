@@ -7,27 +7,45 @@ use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-
         $lowStockLevel = 10;
 
-        // Paginated products
-        $products = Product::orderBy('stock', 'asc')->paginate(9);
+        $query = Product::query();
 
-        
+        // SEARCH
+        if ($request->filled('search')) {
+            $search = $request->search;
 
-        return view('stock.index', compact('products', 'lowStockLevel'));
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%");
+            });
+        }
+
+        // CATEGORY FILTER
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        $products = $query->orderBy('stock', 'asc')->paginate(9);
+
+        // GET DISTINCT CATEGORIES
+        $categories = Product::select('category')->distinct()->pluck('category');
+
+        return view('stock.index', compact('products', 'lowStockLevel', 'categories'));
     }
 
-    public function restockIndex($id){
+    public function restockIndex($id)
+    {
 
-        $product = Product::findOrFail($id); 
+        $product = Product::findOrFail($id);
 
         return view('Stock.restock', compact('product'));
-    }   
+    }
 
-    public function restock(Request $request, $id){
+    public function restock(Request $request, $id)
+    {
 
         $product = Product::findOrFail($id);
 
@@ -39,6 +57,5 @@ class StockController extends Controller
         $product->save();
 
         return redirect()->route('stockIndex')->with('success', $product->name . ' has been restocked successfully!');
-
     }
 }

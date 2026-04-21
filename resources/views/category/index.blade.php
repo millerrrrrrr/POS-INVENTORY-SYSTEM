@@ -60,7 +60,8 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <form action=" {{ route('deleteCategory', $cat->id) }} " method="POST" class="category-delete-form">
+                                        <form action=" {{ route('deleteCategory', $cat->id) }} " method="POST"
+                                            class="category-delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-error">

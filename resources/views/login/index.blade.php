@@ -38,9 +38,9 @@
 
                 <fieldset class="fieldset">
 
-                    <legend class="fieldset-legend text-lg sm:text-xl font-bold mb-4 text-center">
+                    {{-- <legend class="fieldset-legend text-lg sm:text-xl font-bold mb-4 text-center">
                         Login
-                    </legend>
+                    </legend> --}}
 
                     <!-- Username -->
                     <label class="form-control w-full mb-3 floating-label">

@@ -5,27 +5,31 @@
 @section('main')
 
     <form method="GET" action="{{ route('productList') }}" class="mb-4">
-    <div class="flex gap-2 items-center text-white">
-        <input
-            type="text"
-            name="search"
-            value="{{ request('search') }}"
-            placeholder="Search product..."
-            class="input input-bordered w-full max-w-xs"
-        >
+        <div class="flex gap-2 items-center text-white">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search product..."
+                class="input input-bordered w-full max-w-xs">
 
-        <button type="submit" class="btn btn-primary">
-            Search
-        </button>
+            <select name="category" class="select select-bordered w-3xs text-white">
+                <option disabled selected value="">All Categories</option>
+                @foreach ($categories as $cat)
+                    <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>
+                        {{ $cat }}
+                    </option>
+                @endforeach
+            </select>
 
-        {{-- ✅ Clear Button --}}
-        @if(request()->has('search') && request('search') !== '')
-            <a href="{{ route('productList') }}" class="btn bg-red-500 hover:bg-red-600 text-white border-none">
-                Clear
-            </a>
-        @endif
-    </div>
-</form>
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+
+            {{-- ✅ Clear Button --}}
+            @if (request()->has('search') && request('search') !== '')
+                <a href="{{ route('productList') }}" class="btn bg-red-500 hover:bg-red-600 text-white border-none">
+                    Clear
+                </a>
+            @endif
+        </div>
+    </form>
 
     <div class="overflow-x-auto">
         <table class="table table-xs">
@@ -42,7 +46,7 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            <tbody  class="[&_tr:nth-child(even)]:bg-gray-200 [&_tr:nth-child(odd)]:bg-gray-300  font-semibold">
+            <tbody class="[&_tr:nth-child(even)]:bg-gray-200 [&_tr:nth-child(odd)]:bg-gray-300  font-semibold">
                 @forelse ($products as $pro)
                     <tr>
                         <td class="flex justify-center ">
@@ -100,7 +104,8 @@
                                 </a>
 
                                 {{-- Delete --}}
-                                <form action=" {{ route('deleteProduct', $pro->id) }} " method="POST" class="product-delete-form">
+                                <form action=" {{ route('deleteProduct', $pro->id) }} " method="POST"
+                                    class="product-delete-form">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="bg-gray-700 hover:bg-gray-800 p-2 rounded-md text-white">
@@ -131,7 +136,7 @@
     </div>
 
 
-      <script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
 
             document.querySelectorAll(".product-delete-form").forEach(function(form) {

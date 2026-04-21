@@ -61,21 +61,33 @@ class ProductController extends Controller
     }
 
     public function productList(Request $request)
-    {
-        $search = $request->input('search');
+{
+    $search = $request->input('search');
+    $category = $request->input('category');
 
-        $products = Product::when($search, function ($query, $search) {
-            $query->where('name', 'like', "%{$search}%")
-                ->orWhere('barcode', 'like', "%{$search}%")
-                ->orWhere('category', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%");
+    $products = Product::when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('barcode', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
         })
-            ->orderBy('stock', 'asc')
-            ->paginate(8)
-            ->withQueryString(); // keeps search when paginating
+        ->when($category, function ($query, $category) {
+            $query->where('category', $category);
+        })
+        ->orderBy('stock', 'asc')
+        ->paginate(8)
+        ->withQueryString();
 
-        return view('product.list', compact('products', 'search'));
-    }
+    // get categories for dropdown
+    $categories = Product::select('category')
+        ->distinct()
+        ->orderBy('category')
+        ->pluck('category');
+
+    return view('product.list', compact('products', 'search', 'categories'));
+}
 
     public function viewProduct($id)
     {
