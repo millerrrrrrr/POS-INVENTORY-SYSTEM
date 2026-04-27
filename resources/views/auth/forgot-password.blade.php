@@ -45,7 +45,7 @@
         </div>
     </div>
 
-     <script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             @if (session('success'))
                 Toast.fire({
@@ -92,4 +92,5 @@
     </script>
 
 </body>
+
 </html>

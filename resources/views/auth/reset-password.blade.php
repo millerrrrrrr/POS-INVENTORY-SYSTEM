@@ -52,5 +52,52 @@
         </div>
     </div>
 
+
+     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            @if (session('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: @json(session('success'))
+                })
+            @endif
+
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: @json(session('error'))
+                })
+            @endif
+
+            @if (session('warning'))
+                Toast.fire({
+                    icon: 'warning',
+                    title: @json(session('warning'))
+                })
+            @endif
+
+            @if (session('info'))
+                Toast.fire({
+                    icon: 'info',
+                    title: @json(session('info'))
+                })
+            @endif
+
+            @if (session('question'))
+                Toast.fire({
+                    icon: 'question',
+                    title: @json(session('question'))
+                })
+            @endif
+
+            @foreach ($errors->all() as $error)
+                Toast.fire({
+                    icon: 'warning',
+                    title: @json($error)
+                })
+            @endforeach
+        });
+    </script>
+
 </body>
 </html>
