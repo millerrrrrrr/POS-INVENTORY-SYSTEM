@@ -125,7 +125,11 @@
 
 
                 @empty
-                    <td>No Item Found</td>
+                     <tr>
+                        <td colspan="9" class="text-center py-6 text-gray-500 bg-gray-200 font-semibold">
+                            No Item Found
+                        </td>
+                    </tr>
                 @endforelse
 
             </tbody>

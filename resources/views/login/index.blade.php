@@ -55,6 +55,12 @@
                             class="input input-bordered w-full peer focus:outline-none" />
                         <span class="label">Password</span>
                     </label>
+                    <!-- Forgot Password -->
+                    <div class="text-right mb-4">
+                        <a href="{{ route('password.request') }}" class="text-sm text-primary hover:underline">
+                            Forgot Password?
+                        </a>
+                    </div>
 
                     <button type="submit" class="btn btn-primary w-full">
                         Login

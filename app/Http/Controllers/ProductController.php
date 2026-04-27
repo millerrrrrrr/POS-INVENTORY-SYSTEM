@@ -61,33 +61,34 @@ class ProductController extends Controller
     }
 
     public function productList(Request $request)
-{
-    $search = $request->input('search');
-    $category = $request->input('category');
+    {
+        $search = $request->input('search');
+        $category = $request->input('category');
 
-    $products = Product::when($search, function ($query, $search) {
+        $products = Product::when($search, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('barcode', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('barcode', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         })
-        ->when($category, function ($query, $category) {
-            $query->where('category', $category);
-        })
-        ->orderBy('stock', 'asc')
-        ->paginate(8)
-        ->withQueryString();
+            ->when($category, function ($query, $category) {
+                $query->where('category', $category);
+            })
+            ->orderBy('stock', 'asc')
+            ->orderBy('category', 'asc')
+            ->paginate(8)
+            ->withQueryString();
 
-    // get categories for dropdown
-    $categories = Product::select('category')
-        ->distinct()
-        ->orderBy('category')
-        ->pluck('category');
+        // get categories for dropdown
+        $categories = Product::select('category')
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
 
-    return view('product.list', compact('products', 'search', 'categories'));
-}
+        return view('product.list', compact('products', 'search', 'categories'));
+    }
 
     public function viewProduct($id)
     {

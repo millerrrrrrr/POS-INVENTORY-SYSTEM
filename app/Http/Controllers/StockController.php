@@ -28,12 +28,13 @@ class StockController extends Controller
             $query->where('category', $request->category);
         }
 
-        $products = $query->orderBy('stock', 'asc')->paginate(9);
+        $products = $query->orderBy('stock', 'asc')->paginate(8);
 
         // GET DISTINCT CATEGORIES
-        $categories = Product::select('category')->distinct()->pluck('category');
+        $categories = Product::select('category')->distinct()->orderBy('category', 'asc')->pluck('category');
 
-        return view('stock.index', compact('products', 'lowStockLevel', 'categories'));
+
+        return view('stock.index', compact('products', 'lowStockLevel', 'categories',));
     }
 
     public function restockIndex($id)

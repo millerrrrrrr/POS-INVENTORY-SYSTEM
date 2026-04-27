@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\LoginController;
@@ -133,6 +134,15 @@ Route::prefix('salesReport')->controller(SalesReportController::class)->middlewa
 Route::prefix('salesAnalytics')->controller(SalesAnalyticsController::class)->middleware(['owner'])->group(function () {
     Route::get('/', 'index')->name('salesAnalytics.index');
     Route::get('/data', 'getSalesData')->name('salesAnalytics.data');
+});
+
+Route::middleware('guest')->controller(PasswordResetController::class)->group(function () {
+
+    Route::get('/forgot-password', 'requestForm')->name('password.request');
+    Route::post('/forgot-password', 'sendResetLink')->name('password.email');
+
+    Route::get('/reset-password/{token}', 'resetForm')->name('password.reset');
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
 
 
