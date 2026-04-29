@@ -13,9 +13,12 @@
                         <form action=" {{ route('updateCategory', $category->id) }} " method="POST">
                             @csrf
                             @method('PUT')
-                            <div class="form-control mb-4 ">
+                            <div class="form-control mb-4 space-y-4 ">
                                 <input type="text" name="category" placeholder="" value="  {{ $category->category }}  "
                                     class="input input-bordered w-full focus:outline-none" required />
+                                    <input type="number" name="low_stock_level" placeholder="Low stock level"
+                                    class="input input-bordered w-full focus:outline-none" 
+                                    value="{{ old('low_stock_level', $category->low_stock_level) }}" />
                             </div>
                             <div class="form-control">
                                 <button type="submit" class="btn btn-primary w-full">Update</button>

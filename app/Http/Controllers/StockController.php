@@ -2,40 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
     public function index(Request $request)
-    {
-        $lowStockLevel = 10;
+{
+    $query = Product::query()
+        ->join('categories', 'products.category', '=', 'categories.category')
+        ->select('products.*', 'categories.low_stock_level');
 
-        $query = Product::query();
+    // SEARCH
+    if ($request->filled('search')) {
+        $search = $request->search;
 
-        // SEARCH
-        if ($request->filled('search')) {
-            $search = $request->search;
-
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('category', 'like', "%{$search}%");
-            });
-        }
-
-        // CATEGORY FILTER
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
-
-        $products = $query->orderBy('stock', 'asc')->paginate(8);
-
-        // GET DISTINCT CATEGORIES
-        $categories = Product::select('category')->distinct()->orderBy('category', 'asc')->pluck('category');
-
-
-        return view('stock.index', compact('products', 'lowStockLevel', 'categories',));
+        $query->where(function ($q) use ($search) {
+            $q->where('products.name', 'like', "%{$search}%")
+              ->orWhere('products.category', 'like', "%{$search}%");
+        });
     }
+
+    // CATEGORY FILTER
+    if ($request->filled('category')) {
+        $query->where('products.category', $request->category);
+    }
+
+  
+
+    $products = $query
+        ->orderBy('products.stock', 'asc')
+        ->paginate(8);
+
+    $categories = Category::orderBy('category')->get();
+
+    return view('stock.index', compact('products', 'categories'));
+}
 
     public function restockIndex($id)
     {
@@ -59,4 +62,18 @@ class StockController extends Controller
 
         return redirect()->route('stockIndex')->with('success', $product->name . ' has been restocked successfully!');
     }
+
+    public function printLowStock()
+{
+    $products = Product::join('categories', 'products.category', '=', 'categories.category')
+        ->select('products.*', 'categories.low_stock_level')
+        ->where(function ($query) {
+            $query->where('products.stock', '=', 0)
+                  ->orWhereColumn('products.stock', '<=', 'categories.low_stock_level');
+        })
+        ->orderBy('products.stock', 'asc')
+        ->get();
+
+    return view('stock.print-low-stock', compact('products'));
+}
 }

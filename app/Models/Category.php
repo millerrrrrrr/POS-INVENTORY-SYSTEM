@@ -11,5 +11,6 @@ class Category extends Model
 
     protected $fillable = [
         'category',
+        'low_stock_level',
     ];
 }

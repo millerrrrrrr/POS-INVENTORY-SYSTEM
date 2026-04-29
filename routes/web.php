@@ -64,6 +64,7 @@ Route::prefix('stock')->controller(StockController::class)->middleware(['owner']
     Route::get('/', 'index')->name('stockIndex');
     Route::get('{id}/restock', 'restockIndex')->name('restockIndex');
     Route::post('{id}/restock', 'restock')->name('restock');
+    Route::get('/stock/print-low-stock','printLowStock')->name('stock.printLowStock');
 });
 
 Route::prefix('utilities')->controller(UtilitiyController::class)->middleware(['owner'])->group(function () {

@@ -12,8 +12,10 @@
                         <h2 class="card-title text-lg font-semibold mb-4">Add Category</h2>
                         <form action=" {{ route('storeCategory') }} " method="POST">
                             @csrf
-                            <div class="form-control mb-4 ">
+                            <div class="form-control mb-4 space-y-4 ">
                                 <input type="text" name="category" placeholder="Enter category"
+                                    class="input input-bordered w-full focus:outline-none" />
+                                <input type="number" required name="low_stock_level" placeholder="Low stock level"
                                     class="input input-bordered w-full focus:outline-none" />
                             </div>
                             <div class="form-control">
@@ -44,6 +46,7 @@
                         <thead>
                             <tr>
                                 <th>Category</th>
+                                <th>Low Stock Level</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -52,6 +55,7 @@
                             @forelse ($category as $cat)
                                 <tr>
                                     <td class="uppercase"> {{ $cat->category }} </td>
+                                    <td class=""> {{ $cat->low_stock_level }} </td>
                                     <td>
                                         <a href=" {{ route('editCategory', $cat->id) }} ">
                                             <button class="btn btn-info">
