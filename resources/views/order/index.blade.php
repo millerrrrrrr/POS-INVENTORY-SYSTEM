@@ -42,6 +42,7 @@
                                         <th>Description</th>
                                         <th>Stock</th>
                                         <th>Price</th>
+                                        <th>Qty</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -145,6 +146,10 @@
                         <input type="number" step="0.01" name="cash"
                             class="input input-bordered w-full focus:outline-none" required>
 
+                        <label class="label mt-4">Change</label>
+                        <input type="text" id="change" class="input input-bordered focus:outline-none w-full "
+                            readonly value="₱ 0.00">
+
                         <button type="submit" class="btn btn-primary mt-4 w-full">
                             Complete Transaction
                         </button>
@@ -190,4 +195,39 @@
             }
         });
     </script>
+
+
+    {{-- change script --}}
+    <script>
+        const cashInput = document.querySelector("input[name='cash']");
+        const changeInput = document.getElementById("change");
+
+        // Get total from Blade
+        const total = {{ $total ?? 0 }};
+
+        function formatPeso(amount) {
+            return "₱ " + amount.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        cashInput.addEventListener("input", function() {
+            let cash = parseFloat(this.value) || 0;
+            let change = cash - total;
+
+            // Show value (including negative)
+            changeInput.value = formatPeso(change);
+
+            // 🎨 Visual feedback
+            if (change < 0) {
+                changeInput.classList.remove("text-green-600");
+                changeInput.classList.add("text-red-600");
+            } else {
+                changeInput.classList.remove("text-red-600");
+                changeInput.classList.add("text-green-600");
+            }
+        });
+    </script>
+
 @endsection
